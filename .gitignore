@@ -42,6 +42,9 @@ wandb/
 mlruns/
 .cache/
 
+# ===== ZIP siap-unggah Overleaf (regenerable) =====
+01 - Naskah/_Overleaf (siap unggah)/
+
 # ===== Artefak build LaTeX =====
 *.aux
 *.log
