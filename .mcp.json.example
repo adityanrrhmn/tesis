@@ -1,0 +1,38 @@
+{
+  "_comment": "TEMPLATE — salin ke .mcp.json lalu isi OBSIDIAN_API_KEY. File .mcp.json asli (berisi kunci) diabaikan git. Lihat 'SETUP MCP.md'.",
+  "mcpServers": {
+    "obsidian": {
+      "command": "uvx",
+      "args": ["mcp-obsidian"],
+      "env": {
+        "OBSIDIAN_API_KEY": "<TEMPEL_API_KEY_DARI_PLUGIN_LOCAL_REST_API>",
+        "OBSIDIAN_HOST": "127.0.0.1",
+        "OBSIDIAN_PORT": "27129",
+        "OBSIDIAN_PROTOCOL": "https"
+      }
+    },
+    "zotero": {
+      "command": "uvx",
+      "args": ["--from", "zotero-mcp-server", "zotero-mcp"],
+      "env": { "ZOTERO_LOCAL": "true" }
+    },
+    "arxiv": {
+      "command": "uvx",
+      "args": ["arxiv-mcp-server[pdf]", "--storage-path", "D:\\00 - Tesis\\02 - Literatur\\PDF"]
+    },
+    "paper-search": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/openags/paper-search-mcp", "paper-search-mcp"],
+      "env": { "PAPER_SEARCH_MCP_UNPAYWALL_EMAIL": "aijenteknologi@gmail.com" }
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
+      "env": { "PYTHONIOENCODING": "utf-8" }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  }
+}

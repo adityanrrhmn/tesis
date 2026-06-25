@@ -1,0 +1,36 @@
+Silahkan disesuaikan dengan kebutuhan dan kasusnya masing-masing. Contoh yang bisa diikuti adalah sebagai berikut: 
+
+\section{Deskripsi Umum Penelitian}
+Pada bagian ini, penelitian dijelaskan secara singkat dan jelas. Fokus penelitian ini adalah [jelaskan fokus utama penelitian, misalnya pengembangan model kecerdasan buatan untuk klasifikasi teks, pengenalan gambar, atau prediksi.
+
+\section{Akuisisi Data}
+
+\section{Rancangan Model}
+Contoh pseudocode atau algoritma ditunjukkan pada \textit{pseudocode} \ref{alg:semantic_instruction}.
+
+\begin{algorithm}[H]
+\caption{Generate Semantic-Based Instructions}
+\label{alg:semantic_instruction}
+\begin{algorithmic}[1]
+\Procedure{GenerateInstructions}{KeyID}
+    \State word $\gets$ GetSpecialWord(KeyID)
+    \State mapped $\gets$ FindParallelWord(word) \textbf{or} word
+    \State embedding $\gets$ GenerateEmbedding(mapped)
+    \State nearest $\gets$ FindNearestWords(embedding, n)
+    \State instructions $\gets$ [ ]
+    \ForAll{w \textbf{in} nearest}
+        \State alt $\gets$ FindParallelWord(w) \textbf{or} w
+        \State instructions.append(alt)
+    \EndFor
+    \State \Return CombineIntoInstruction(instructions)
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\section{Rancangan Pengujian}
+Pengujian model dilakukan dengan menggunakan [jelaskan metode pengujian, misalnya train-test split 80-20, k-fold cross-validation]. Metrik evaluasi yang digunakan meliputi [sebutkan metrik yang relevan, misalnya accuracy, precision, recall, F1-score untuk klasifikasi, atau MSE untuk regresi].
+
+

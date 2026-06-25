@@ -1,0 +1,204 @@
+% -----------------------------------------------------------------------
+% Template Tesis MKA
+% 
+% Diadaptasi dari https://github.com/yusufsyaifudin/template-skripsi-mipa oleh @author Yusuf Syaifudin
+% @updated 09/07/2025
+% 
+% -----------------------------------------------------------------------
+
+\documentclass[ugmtesis]{ugmtesis}
+
+\input{ADDITIONAL_PACKAGES}
+\input{CONFIG_TESIS}
+
+
+
+\usepackage{etoolbox} 
+\pretocmd{\chapter}{\glsresetall}{}{}
+
+% komen jika tidak menggunakan glosarium
+\makeglossaries
+\input{GLOSARIUM}
+
+\begin{document}
+
+% Cover
+\cover
+
+% Halaman judul
+\titlepageind 
+
+% Halaman Persetujuan
+\approvalpage
+
+% Halaman pernyataan bebas plagiasi
+\copyright
+
+% Halaman prakata
+\preface
+
+% Motto, dibuka komenya kalau mau gunakan
+% \acknowledment
+% \input{Contents/Motto}
+
+%-----------------------------------------------------------------
+% Daftar Isi
+%-----------------------------------------------------------------
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\contentsname}
+\tableofcontents
+%-----------------------------------------------------------------
+% Akhir Daftar Isi
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Daftar Tabel
+%-----------------------------------------------------------------
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+%-----------------------------------------------------------------
+% Akhir Daftar Tabel
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Daftar Gambar
+%-----------------------------------------------------------------
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+%-----------------------------------------------------------------
+% Akhir Daftar Gambar
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Daftar Algoritma
+%-----------------------------------------------------------------
+% dikomen jika tidak menggunakan algoritma
+\newpage
+\phantomsection
+\renewcommand{\listalgorithmname}{DAFTAR ALGORITMA}
+\addcontentsline{toc}{chapter}{DAFTAR ALGORITMA}
+\listofalgorithms % Menampilkan daftar algoritma
+%-----------------------------------------------------------------
+% Akhir Daftar Algoritma
+%-----------------------------------------------------------------
+
+
+%-----------------------------------------------------------------
+% Daftar Kode Program
+%-----------------------------------------------------------------
+\newpage
+\phantomsection
+% \renewcommand{\thechapter}{\arabic{chapter}}
+\renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
+\renewcommand\lstlistingname{Kode Program}
+\renewcommand\lstlistlistingname{DAFTAR KODE PROGRAM}
+\addcontentsline{toc}{chapter}{DAFTAR KODE PROGRAM}
+\lstlistoflistings
+
+
+%-----------------------------------------------------------------
+% Akhir Daftar Kode Program
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Daftar Istilah
+%-----------------------------------------------------------------
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{DAFTAR ISTILAH}
+\printglossary[type=main, title=DAFTAR ISTILAH]
+%-----------------------------------------------------------------
+% Akhir Daftar Istilah
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Daftar Singkatan
+%-----------------------------------------------------------------
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{DAFTAR SINGKATAN}
+\printglossary[type=\acronymtype, title=DAFTAR SINGKATAN]
+%-----------------------------------------------------------------
+% Akhir Singkatan
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+%Disini awal masukan Intisari
+%-----------------------------------------------------------------
+\begin{abstractind}
+	\input{Contents/Abstrak_ID}
+\end{abstractind}
+%-----------------------------------------------------------------
+%Disini akhir masukan Intisari
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+%Disini awal masukan untuk Abstract
+%-----------------------------------------------------------------
+\begin{abstracteng}
+  \input{Contents/Abstract_EN}
+\end{abstracteng}
+%-----------------------------------------------------------------
+%Disini akhir masukan Abstract
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Konten Tesis
+%-----------------------------------------------------------------
+\chapter{PENDAHULUAN}
+\label{PENDAHULUAN}
+\input{Contents/BAB_1}
+
+\chapter{TINJAUAN PUSTAKA}
+\label{TINJAUAN PUSTAKA}
+\input{Contents/BAB_2}
+
+\chapter{DASAR TEORI}
+\label{DASAR TEORI}
+\input{Contents/BAB_3}
+
+\chapter{METODOLOGI PENELITIAN}
+\label{ANALISIS DAN PERANCANGAN SISTEM}
+\input{Contents/BAB_4}
+
+\chapter{IMPLEMENTASI SISTEM}
+\label{IMPLEMENTASI SISTEM}
+\input{Contents/BAB_5}
+
+\chapter{HASIL DAN PEMBAHASAN}
+\label{PENGUJIAN DAN PEMBAHASAN SISTEM}
+\input{Contents/BAB_6}
+
+\chapter{PENUTUP}
+\label{PENUTUP}
+\input{Contents/BAB_7}
+
+
+%-----------------------------------------------------------------
+% Awal Daftar Pustaka
+%-----------------------------------------------------------------
+\addcontentsline{toc}{chapter}{DAFTAR PUSTAKA}
+\bibliography{referensi}
+%-----------------------------------------------------------------
+% Akhir Daftar Pustaka
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+% Awal lampiran
+%-----------------------------------------------------------------
+% dibuka komennya kalau ada lampirannya
+% \appendix
+% \chapter{BERKAS JSON UNTUK MODEL SISTEM PENGENALAN ENTITAS BERNAMA}
+% \label{BERKAS JSON UNTUK MODEL SISTEM PENGENALAN ENTITAS BERNAMA}
+% \input{BAB_TESIS/BAB9_LAMPIRAN/1_BERKAS_MODEL_NER}
+
+%-----------------------------------------------------------------
+% Akhir lampiran
+%-----------------------------------------------------------------
+
+\end{document}

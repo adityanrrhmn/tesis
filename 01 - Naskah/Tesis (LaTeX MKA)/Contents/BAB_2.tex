@@ -1,0 +1,38 @@
+Tinjauan pustaka memuat uraian sistematis tentang informasi hasil penelitian yang disajikan dalam pustaka dan menghubungkannya dengan masalah penelitian yang sedang diteliti. Fakta-fakta yang dikemukakan sejauh mungkin diacu dari sumber aslinya, dengan mengikuti cara sitasi nama-tahun dalam kurung biasa. Sitasi tidak dari sumber asli hanya boleh dilakukan dalam keadaan terpaksa yaitu ketika sumber aslinya sangat sulit ditemukan.
+
+Gunakan ini untuk sitasi \citet{aji-etal-2022-one} atau \citep{aji-etal-2022-one}. Contoh rangkuman tabel tinjauan pustaka ditunjukkan pada Tabel \ref{tab:tinjauan-pustaka}.
+
+\begin{longtable}{p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth}}
+    \caption{Tinjauan Pustaka}
+    \label{tab:tinjauan-pustaka} \\
+    \hline
+    \textbf{Nama} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil} \\
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Nama} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil} \\
+    \hline
+    \endhead
+
+    \hline
+    \multicolumn{4}{r}{Lanjutan di halaman berikutnya...} \\
+    \endfoot
+
+    \hline
+    \endlastfoot
+
+    \citet{iyer-etal-2024-exploring} &  
+    Mengeksplorasi penggunaan data monolingual untuk model multilingual.  &  
+    Model Llama-2, MaLA-500, Mistral 7B dengan pendekatan LoRA.& 
+    \textit{Pretraining} dengan data monolingual meningkatkan performa penerjemahan. \\
+    \hline 
+    
+    \citet{cahyawijaya-etal-2023-instructalign} &  
+    Melakukan pelatihan model menggunakan Cross-lingual Instruction Tuning berbasis \textit{Alignment}.  &  
+    Model BLOOMZ dengan instruksi TLM dan XSS. & 
+    \textit{Alignment} meningkatkan pemahaman bahasa \textit{Low-resource}. \\
+    \hline
+    % Tambahkan lebih banyak baris jika perlu
+
+\end{longtable}

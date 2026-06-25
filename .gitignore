@@ -1,0 +1,81 @@
+# ===== Rahasia / kredensial =====
+# .mcp.json berisi API key Obsidian — JANGAN di-commit. Pakai .mcp.json.example sebagai acuan.
+.mcp.json
+.env
+.env.local
+*.key
+secrets.json
+
+# ===== Dataset & model besar =====
+03 - Eksperimen/data/**
+!03 - Eksperimen/data/.gitkeep
+03 - Eksperimen/models/**
+!03 - Eksperimen/models/.gitkeep
+03 - Eksperimen/logs/**
+!03 - Eksperimen/logs/.gitkeep
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+*.h5
+*.onnx
+*.bin
+*.npz
+*.npy
+*.parquet
+*.csv.gz
+
+# ===== PDF literatur (hapus baris ini jika ingin di-track) =====
+02 - Literatur/PDF/**
+!02 - Literatur/PDF/.gitkeep
+
+# ===== Python / ML =====
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+wandb/
+mlruns/
+.cache/
+
+# ===== Artefak build LaTeX =====
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.lol
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.ist
+*.glsdefs
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.nav
+*.snm
+*.vrb
+
+# ===== Obsidian (workspace lokal) =====
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.trash/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini

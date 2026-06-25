@@ -1,0 +1,71 @@
+Silahkan disesuaikan dengan kebutuhan dan kasusnya masing-masing. Contoh yang bisa diikuti adalah sebagai berikut: 
+
+\section{Alat dan Bahan}
+    
+\section{Pembagian Data Latih dan Data Uji}
+Total data yang digunakan ditunjukkan pada Tabel \ref{tab:total_instruksi}. 
+
+\begin{table}[!h]
+    \centering
+    \caption{Total Generasi Instruksi}
+    \label{tab:total_instruksi}
+    \begin{tabular}{lll}
+    \toprule
+        Deskripsi & Data Paralel & Data Instruksi  \\
+    \midrule
+        Data Latih  & 53.217 & 212.868 \\
+        Data Uji & 13.304 & 13.304 \\
+        Experience Replay & - & 1000 \\
+    \midrule
+        \textbf{Total} & 66.521 & 227.172 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Pra Pemrosesan}
+
+
+% \begin{lstlisting}[language=Python, caption=Pelatihan model FastText, label=lst:fasttext_training]
+% from gensim.models import FastText
+% from nltk.tokenize import word_tokenize
+% fasttext_data = []
+% fasttext_data.extend(tapaleuk_data['text'].dropna().tolist())
+% fasttext_data.extend(jfs_data.dropna().tolist())
+% fasttext_data.extend(taxi1500_data.dropna().tolist())
+% fasttext_data.extend(puisi_data['text'])
+% fasttext_data.extend(pantun_data['text'])
+% sentences = [word_tokenize(data.lower()) for data in fasttext_data]
+% fasttext_model = FastText(sentences=sentences, vector_size=300, window=5, min_count=2, workers=2)
+% \end{lstlisting}
+
+
+\section{Pelatihan Model}
+\subsubsection{Model Training}
+ 
+% \begin{lstlisting}[language=Python, caption=Pelatihan Model, label=lst:pelatihan_model]
+% from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments, DataCollatorForSeq2Seq
+% def train():
+%     accelerator = Accelerator()
+%     model, tokenizer = load_model_and_tokenizer(model_args, logger)
+%     model = setup_model_for_training(model, model_args)
+%     train_dataset, val_dataset = prepare_datasets(data_args, tokenizer)
+%     data_collator = DataCollatorForSeq2Seq(
+%         tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True)
+%     trainer = Seq2SeqTrainer(
+%         model=model,
+%         args=training_args,
+%         train_dataset=train_dataset,
+%         eval_dataset=val_dataset,
+%         tokenizer=tokenizer,
+%         data_collator=data_collator)
+%     trainer.train()
+%     model = accelerator.unwrap_model(model)
+%     model.save_pretrained(
+%         training_args.output_dir,
+%         is_main_process=accelerator.is_main_process,
+%         save_function=accelerator.save)
+% \end{lstlisting}
+
+\section{Pengujian Model}
+
+
