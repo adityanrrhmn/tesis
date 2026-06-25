@@ -74,6 +74,9 @@ mlruns/
 *.vrb
 # Output kompilasi utama (regenerable; Figures/*.pdf sumber tetap di-track)
 **/LAPORAN_TESIS.pdf
+# berkas bantu konversi (regenerable)
+*.csl
+_docx_src.tex
 
 # ===== Obsidian (workspace lokal) =====
 .obsidian/workspace.json
