@@ -1,33 +1,125 @@
-Bab ini menguraikan landasan teori yang menjadi dasar penelitian, meliputi arsitektur model bahasa, \gls{slm}, \gls{peft} dengan \gls{lora}, \gls{rag}, mekanisme \gls{reranking}, serta konsep \gls{ai} \textit{agent}.
+Bab ini menguraikan landasan teori yang menjadi dasar penelitian, meliputi arsitektur model bahasa, \gls{slm}, \gls{peft} dengan \gls{lora}, \gls{rag}, mekanisme \gls{reranking}, konsep \gls{ai} \textit{agent}, serta platform otomatisasi alur kerja n8n. Bagian akhir menyajikan justifikasi pemilihan tiap pendekatan dibandingkan alternatifnya.
 
 \section{Model Bahasa dan Arsitektur \textit{Transformer}}
-Model bahasa modern dibangun di atas arsitektur \textit{transformer} yang mengandalkan mekanisme \textit{self-attention} untuk menangkap keterkaitan antar-token dalam suatu urutan \citep{minaee2024llmsurvey}. Inti dari mekanisme tersebut adalah operasi \textit{attention} yang dirumuskan pada Persamaan \ref{eq:attention}, dengan $Q$, $K$, dan $V$ berturut-turut adalah matriks \textit{query}, \textit{key}, dan \textit{value}, serta $d_k$ adalah dimensi \textit{key}.
+Model bahasa modern dibangun di atas arsitektur \textit{transformer} yang mengandalkan mekanisme \textit{self-attention} untuk menangkap keterkaitan antar-token dalam suatu urutan \citep{minaee2024llmsurvey}. Inti mekanisme tersebut dirumuskan pada Persamaan \ref{eq:attention}, dengan $Q$, $K$, dan $V$ berturut-turut matriks \textit{query}, \textit{key}, dan \textit{value}, serta $d_k$ dimensi \textit{key}.
 
 \begin{equation}
     \text{Attention}(Q, K, V) = \text{softmax}\left( \frac{QK^\top}{\sqrt{d_k}} \right) V
     \label{eq:attention}
 \end{equation}
 
-Model bahasa berskala besar dilatih pada korpus teks masif sehingga mampu menyimpan pengetahuan dalam parameternya dan menunjukkan kemampuan generalisasi yang kuat \citep{minaee2024llmsurvey}.
+Model bahasa berskala besar (\gls{llm}) dilatih pada korpus teks masif sehingga menyimpan pengetahuan dalam parameternya dan menunjukkan kemampuan generalisasi yang kuat, namun dengan biaya komputasi dan kebutuhan memori yang tinggi \citep{minaee2024llmsurvey}.
 
 \section{Small Language Model}
-\gls{slm} adalah model bahasa dengan jumlah parameter relatif kecil (umumnya pada kisaran ratusan juta hingga beberapa miliar) sehingga dapat dijalankan pada perangkat keras terbatas atau secara lokal \citep{wang2025slmsurvey}. Efisiensi \gls{slm} dicapai melalui kombinasi arsitektur yang ringkas, kurasi data pra-pelatihan yang berkualitas, serta teknik kompresi. Keunggulan utama \gls{slm} adalah biaya inferensi yang rendah, latensi yang kecil, dan kemampuan berjalan tanpa ketergantungan pada layanan awan, dengan konsekuensi kapasitas penalaran yang lebih terbatas dibanding model besar \citep{wang2025slmsurvey}.
+\gls{slm} adalah model bahasa dengan jumlah parameter relatif kecil (umumnya ratusan juta hingga beberapa miliar) sehingga dapat dijalankan pada perangkat keras terbatas atau secara lokal \citep{wang2025slmsurvey}. Sebagai gambaran, \gls{slm} terbuka seperti TinyLlama berukuran 1,1 miliar parameter \citep{zhang2024tinyllama} dan Phi-3-mini 3,8 miliar parameter \citep{abdin2024phi3}, jauh lebih kecil dibanding \gls{llm} seperti GPT-3 yang berukuran 175 miliar parameter \citep{hu2022lora}. Perbandingan ukuran ini diilustrasikan pada Gambar \ref{fig:ukuran-model}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        ybar,
+        width=0.9\textwidth, height=6.2cm,
+        ylabel={Jumlah parameter (miliar)},
+        symbolic x coords={TinyLlama, Phi-3-mini, Qwen2.5-7B, GPT-3},
+        xtick=data,
+        nodes near coords,
+        ymin=0, ymax=200,
+        bar width=20pt,
+        enlarge x limits=0.22,
+    ]
+    \addplot coordinates {(TinyLlama,1.1) (Phi-3-mini,3.8) (Qwen2.5-7B,7) (GPT-3,175)};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Perbandingan jumlah parameter \gls{slm} terhadap \gls{llm} berskala besar (sumber: publikasi masing-masing model).}
+    \label{fig:ukuran-model}
+\end{figure}
+
+Keunggulan utama \gls{slm} adalah biaya inferensi rendah, latensi kecil, dan kemampuan berjalan tanpa ketergantungan layanan awan sehingga menjaga privasi data; konsekuensinya, kapasitas penalaran dan pengetahuan internalnya lebih terbatas dibanding model besar \citep{wang2025slmsurvey}.
 
 \section{Parameter-Efficient Fine-Tuning dan LoRA}
-\gls{peft} adalah keluarga teknik yang mengadaptasi model terlatih dengan hanya memperbarui sebagian kecil parameter, sementara sebagian besar bobot dibekukan \citep{ding2023delta}. \gls{lora} \citep{hu2022lora} merupakan salah satu metode \gls{peft} paling banyak digunakan. Diberikan bobot terlatih $W_0 \in \mathbb{R}^{d \times k}$, \gls{lora} memodelkan pembaruan bobot $\Delta W$ sebagai hasil perkalian dua matriks berperingkat rendah, sebagaimana Persamaan \ref{eq:lora}, dengan $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times k}$, dan peringkat $r \ll \min(d,k)$.
+\gls{peft} adalah keluarga teknik yang mengadaptasi model terlatih dengan hanya memperbarui sebagian kecil parameter, sementara sebagian besar bobot dibekukan \citep{ding2023delta}. \gls{lora} \citep{hu2022lora} memodelkan pembaruan bobot terlatih $W_0 \in \mathbb{R}^{d \times k}$ sebagai hasil perkalian dua matriks berperingkat rendah (Persamaan \ref{eq:lora}), dengan $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times k}$, dan peringkat $r \ll \min(d,k)$.
 
 \begin{equation}
     h = W_0 x + \Delta W x = W_0 x + B A x
     \label{eq:lora}
 \end{equation}
 
-Karena hanya $A$ dan $B$ yang dilatih, jumlah parameter yang diperbarui jauh lebih kecil daripada \textit{fine-tuning} penuh, tanpa menambah latensi inferensi karena $B A$ dapat digabungkan kembali ke $W_0$ saat penerapan \citep{hu2022lora}. Varian QLoRA menambahkan kuantisasi 4-bit pada bobot dasar untuk menekan kebutuhan memori \citep{dettmers2023qlora}.
+Karena hanya $A$ dan $B$ yang dilatih, jumlah parameter yang diperbarui jauh lebih kecil daripada \textit{fine-tuning} penuh, tanpa menambah latensi inferensi karena $BA$ dapat digabungkan kembali ke $W_0$ saat penerapan \citep{hu2022lora}. Varian QLoRA menambahkan kuantisasi 4-bit pada bobot dasar untuk menekan kebutuhan memori \citep{dettmers2023qlora}.
 
 \section{Retrieval-Augmented Generation}
-\gls{rag} memadukan kemampuan generatif model bahasa (memori parametrik) dengan basis pengetahuan eksternal yang dapat diambil saat inferensi (memori non-parametrik) \citep{lewis2020rag}. Secara umum, alur \gls{rag} terdiri atas tiga tahap: (1) \textit{retrieval}, yaitu pengambilan dokumen relevan dari basis pengetahuan menggunakan representasi vektor; (2) \textit{augmentation}, yaitu penggabungan dokumen terambil ke dalam \textit{prompt}; dan (3) \textit{generation}, yaitu penghasilan jawaban oleh model bahasa berdasarkan konteks tersebut \citep{gao2023ragsurvey}. Pendekatan ini memungkinkan pembaruan pengetahuan tanpa pelatihan ulang dan mengurangi halusinasi.
+\gls{rag} memadukan kemampuan generatif model bahasa (memori parametrik) dengan basis pengetahuan eksternal yang diambil saat inferensi (memori non-parametrik) \citep{lewis2020rag}. Alurnya terdiri atas tiga tahap: (1) \textit{retrieval}, pengambilan dokumen relevan menggunakan representasi vektor; (2) \textit{augmentation}, penggabungan dokumen ke dalam \textit{prompt}; dan (3) \textit{generation}, penghasilan jawaban berdasarkan konteks tersebut \citep{gao2023ragsurvey}. Pendekatan ini memungkinkan pembaruan pengetahuan tanpa pelatihan ulang dan mengurangi halusinasi.
 
 \section{Re-ranking}
 \gls{reranking} adalah tahap menyusun ulang peringkat dokumen hasil \textit{retrieval} awal agar dokumen paling relevan menempati posisi teratas sebelum diberikan ke model generatif. Tahap ini penting karena model bahasa, khususnya yang berukuran kecil dengan konteks terbatas, terbukti tidak robust memanfaatkan informasi yang terletak di tengah konteks panjang \citep{liu2024lostmiddle}. \gls{reranking} dapat dilakukan dengan model terlatih khusus \citep{ren2021rocketqav2} maupun dengan memanfaatkan model bahasa sebagai pemeringkat \textit{listwise} \citep{sun2023rankgpt}.
 
 \section{AI Agent}
-\gls{ai} \textit{agent} berbasis model bahasa adalah sistem yang menggunakan model bahasa sebagai \textit{controller} untuk menalar, merencanakan, dan berinteraksi dengan lingkungan melalui \textit{tool} eksternal guna menyelesaikan tugas \citep{wang2024agentsurvey}. Komponen pentingnya mencakup kemampuan pemanggilan \textit{tool}/\gls{api} \citep{schick2023toolformer} dan penalaran bertahap \citep{yao2023tot}. Dalam konteks \gls{workflow}, agen memetakan instruksi pengguna menjadi rangkaian tindakan terotomasi, sehingga akurasi model dalam memahami instruksi dan memilih tindakan yang tepat menjadi faktor kritis.
+\gls{ai} \textit{agent} berbasis model bahasa adalah sistem yang menggunakan model bahasa sebagai \textit{controller} untuk menalar, merencanakan, dan berinteraksi dengan lingkungan melalui \textit{tool} eksternal guna menyelesaikan tugas \citep{wang2024agentsurvey}. Komponen pentingnya mencakup pemanggilan \textit{tool}/\gls{api} \citep{schick2023toolformer} dan penalaran bertahap \citep{yao2023tot}. Dalam konteks \gls{workflow}, agen memetakan instruksi pengguna menjadi rangkaian tindakan terotomasi sehingga akurasi model dalam memahami instruksi dan memilih tindakan yang tepat menjadi faktor kritis.
+
+\section{Workflow Automation dan n8n}
+Otomatisasi alur kerja (\gls{workflow}) adalah perancangan rangkaian tugas yang berjalan otomatis untuk menyelesaikan suatu proses. Pada penelitian ini, \gls{slm} teroptimasi diintegrasikan sebagai mesin penalaran agen di dalam platform \textbf{n8n}\footnote{\url{https://n8n.io}}, sebuah platform otomatisasi alur kerja sumber terbuka berbasis \textit{node} visual (\textit{low-code}). n8n memungkinkan perangkaian \textit{trigger}, pemanggilan \gls{api}/\textit{tool}, dan pemanggilan model bahasa (termasuk model lokal) ke dalam satu alur kerja yang dapat dijalankan secara \textit{self-hosted}. Karakteristik ini menjadikan n8n sesuai sebagai lingkungan pengujian agen yang nyata sekaligus menjaga privasi data karena dapat berjalan sepenuhnya di infrastruktur lokal.
+
+\section{Justifikasi Pemilihan Pendekatan}
+Subbab ini menjelaskan alasan pemilihan tiap pendekatan dibandingkan alternatifnya, sebagai dasar pertanggungjawaban metodologis penelitian.
+
+\subsection{Pemilihan LoRA}
+Tabel \ref{tab:justif-lora} membandingkan \gls{lora} dengan alternatif \gls{finetuning}. \gls{lora} dipilih karena menyeimbangkan efisiensi parameter dan memori \textbf{tanpa menambah latensi inferensi}, sebab matriks adaptasi dapat digabungkan kembali ke bobot dasar \citep{hu2022lora}. Hal ini krusial bagi \gls{slm} lokal yang mengutamakan kecepatan respons. \textit{Fine-tuning} penuh terlalu mahal dan menghasilkan salinan model utuh per tugas \citep{ding2023delta}; \textit{adapter} dan \textit{prompt/prefix tuning} menambah latensi atau kurang stabil \citep{hu2023llmadapters, ding2023delta}; sedangkan QLoRA—yang sangat hemat memori melalui kuantisasi \citep{dettmers2023qlora}—dipertimbangkan sebagai opsi pelengkap apabila memori \gls{gpu} sangat terbatas.
+
+\begin{table}[H]
+    \centering
+    \caption{Perbandingan LoRA dengan Alternatif Fine-Tuning}
+    \label{tab:justif-lora}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lllll}
+        \toprule
+        \textbf{Pendekatan} & \textbf{Parameter dilatih} & \textbf{Kebutuhan memori} & \textbf{Latensi inferensi} & \textbf{Catatan} \\
+        \midrule
+        \textit{Full fine-tuning} & Seluruh parameter & Sangat besar & Tetap & Mahal; satu model utuh per tugas \\
+        \textit{Adapter} & Kecil & Sedang & Bertambah & Lapisan tambahan saat inferensi \\
+        \textit{Prompt/Prefix tuning} & Sangat kecil & Kecil & Bertambah & Kurang stabil untuk tugas kompleks \\
+        QLoRA & Kecil & Sangat kecil & Sedikit \textit{overhead} & Hemat memori (kuantisasi 4-bit) \\
+        \textbf{LoRA (dipilih)} & Kecil & Kecil & \textbf{Tetap} & Seimbang; ekosistem matang \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\subsection{Pemilihan RAG}
+Untuk menyuntikkan pengetahuan eksternal ke \gls{slm}, \gls{rag} dipilih dibandingkan menanam pengetahuan melalui \textit{fine-tuning} atau memasukkan seluruh dokumen ke konteks panjang (Tabel \ref{tab:justif-rag}). \citet{ovadia2024ftrag} menunjukkan secara empiris bahwa \gls{rag} konsisten mengungguli \textit{unsupervised fine-tuning} dalam injeksi pengetahuan, baik untuk pengetahuan lama maupun baru. Pendekatan konteks panjang rentan terhadap fenomena \textit{lost in the middle} \citep{liu2024lostmiddle}, terutama pada \gls{slm}. \gls{rag} memungkinkan pembaruan pengetahuan tanpa pelatihan ulang dan mengurangi halusinasi \citep{lewis2020rag, gao2023ragsurvey}, sementara penambahan \gls{reranking} memastikan konteks paling relevan diberikan kepada model.
+
+\begin{table}[H]
+    \centering
+    \caption{Perbandingan RAG dengan Alternatif Injeksi Pengetahuan}
+    \label{tab:justif-rag}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{llll}
+        \toprule
+        \textbf{Pendekatan} & \textbf{Pembaruan pengetahuan} & \textbf{Risiko halusinasi} & \textbf{Catatan} \\
+        \midrule
+        \textit{Fine-tuning} pengetahuan & Perlu latih ulang & Tinggi & Sulit menyerap fakta baru \citep{ovadia2024ftrag} \\
+        Konteks panjang (semua dokumen) & Dinamis & Sedang--tinggi & Rentan \textit{lost in the middle} \citep{liu2024lostmiddle} \\
+        \textbf{RAG + re-ranking (dipilih)} & Dinamis tanpa latih ulang & Rendah & \textit{Grounding} + konteks paling relevan \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\subsection{Pemilihan Platform n8n}
+Sebagai lingkungan \gls{workflow} agen, n8n dipilih dibandingkan kerangka kerja berbasis kode maupun \textit{low-code} lain (Tabel \ref{tab:justif-n8n}). Pertimbangan utamanya adalah kemampuan \textit{self-hosted} yang selaras dengan tujuan privasi dan penerapan lokal penelitian ini, antarmuka visual berbasis \textit{node} yang memudahkan perancangan serta reprodusibilitas alur kerja, dan pustaka integrasi yang luas termasuk dukungan pemanggilan model lokal. Justifikasi ini bersifat praktis/teknis mengingat platform-platform tersebut merupakan perkakas rekayasa, bukan objek penelitian akademik.
+
+\begin{table}[H]
+    \centering
+    \caption{Perbandingan n8n dengan Platform Orkestrasi Alternatif}
+    \label{tab:justif-n8n}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{llll}
+        \toprule
+        \textbf{Platform} & \textbf{Jenis} & \textbf{Self-host} & \textbf{Antarmuka} \\
+        \midrule
+        LangChain / LangGraph & Pustaka kode & Ya & Berbasis kode \\
+        AutoGen / CrewAI & Kerangka multi-agen (kode) & Ya & Berbasis kode \\
+        Dify / Flowise & \textit{Low-code} & Ya & Visual \\
+        \textbf{n8n (dipilih)} & Otomasi alur kerja \textit{low-code} & \textbf{Ya} & Visual \textit{node-based} \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}

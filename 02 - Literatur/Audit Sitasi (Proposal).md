@@ -4,7 +4,7 @@ jenis: audit-sitasi
 ---
 # 🛡️ Audit Sitasi — Proposal (Anti-Halusinasi)
 
-> Bukti bahwa **setiap sitasi di proposal merujuk paper NYATA**. Tiap entri ditemukan via MCP (OpenAlex / DBLP / arXiv / Crossref) dan diverifikasi pengenal stabilnya (DOI atau arXiv-id). Audit otomatis terakhir: **37 sitasi dipakai dari 38 entri `referensi.bib`, 0 menggantung**.
+> Bukti bahwa **setiap sitasi di proposal merujuk paper NYATA**. Tiap entri ditemukan via MCP (OpenAlex / DBLP / arXiv / Crossref) dan diverifikasi pengenal stabilnya (DOI atau arXiv-id). Audit otomatis terakhir: **38 sitasi dipakai dari 39 entri `referensi.bib`, 0 menggantung**.
 
 **Tanggal audit:** 2026-06-25 · **Berkas:** `01 - Naskah/Proposal (LaTeX MKA)/referensi.bib`
 
@@ -48,6 +48,7 @@ jenis: audit-sitasi
 | 36 | erdogan2024tinyagent | Erdogan dkk. (2024) | EMNLP (Demo) | 10.18653/v1/2024.emnlp-demo.9 | ✅ |
 | 37 | niu2025flow | Niu dkk. (2025) | ICLR | arXiv:2501.07834 | ✅ |
 | 38 | han2026legomem | Han dkk. (2026) | AAMAS | arXiv:2510.04851 | ✅ |
+| 39 | ovadia2024ftrag | Ovadia dkk. (2024) | EMNLP | 10.18653/v1/2024.emnlp-main.15 | ✅ |
 
 ## Verifikasi referensi PPT (analisis 13 paper rujukan PPT)
 Seluruh 13 paper yang dirujuk di PPT **terbukti NYATA** (tidak ada yang dikarang PPT). Temuan:

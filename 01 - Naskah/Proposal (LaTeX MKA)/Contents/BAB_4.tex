@@ -17,7 +17,17 @@ Data yang digunakan meliputi tiga komponen:
     \item \textbf{Data \gls{finetuning}:} data instruksi sebagai basis adaptasi, mengacu pada dataset instruksi Alpaca\footnote{\url{https://huggingface.co/datasets/tatsu-lab/alpaca}} sebagai titik awal, yang selanjutnya dilengkapi/diadaptasi dengan data instruksi spesifik tugas agen (mis. pemanggilan \textit{tool} dan penalaran prosedural). % TODO: tetapkan komposisi & jumlah sampel data domain.
     \item \textbf{Basis pengetahuan \gls{rag}:} korpus dokumen domain yang diindeks sebagai basis \textit{retrieval}. % TODO: tetapkan korpus domain.
 \end{enumerate}
-Data dibagi menjadi himpunan latih, validasi, dan uji dengan proporsi yang ditetapkan secara konsisten, dan seluruh praproses (pembersihan, tokenisasi, penyusunan \textit{prompt}) didokumentasikan agar reprodusibel.
+Data dibagi menjadi himpunan latih, validasi, dan uji dengan proporsi yang ditetapkan secara konsisten, dan seluruh praproses (pembersihan, tokenisasi, penyusunan \textit{prompt}) didokumentasikan agar reprodusibel. Rencana komposisi data latih diilustrasikan pada Gambar \ref{fig:komposisi-data}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \pie[radius=2, text=legend, color={gray!30, gray!60}]{70/Data instruksi umum (Alpaca), 30/Data domain agen}
+    \end{tikzpicture}
+    \caption{Rencana komposisi data latih (ilustratif; proporsi final disesuaikan saat pelaksanaan).}
+    \label{fig:komposisi-data}
+    % TODO (Aditya): tetapkan proporsi final data latih.
+\end{figure}
 
 \section{Rancangan Model}
 Sistem yang diusulkan terdiri atas dua jalur optimasi yang saling melengkapi. Pertama, model dasar diadaptasi ke domain melalui \gls{finetuning} \gls{lora} \citep{hu2022lora}, bila perlu dengan kuantisasi mengikuti skema QLoRA untuk menghemat memori \citep{dettmers2023qlora}; implementasi pelatihan memanfaatkan perkakas \gls{finetuning} yang telah mapan \citep{zheng2024llamafactory}. Kedua, pada tahap inferensi, model di-augmentasi dengan \gls{rag} \citep{lewis2020rag, gao2023ragsurvey} yang dilengkapi tahap \gls{reranking} untuk memastikan konteks paling relevan diberikan kepada model, mengingat keterbatasan pemanfaatan konteks panjang pada model kecil \citep{liu2024lostmiddle}. Mekanisme \gls{reranking} yang dibandingkan mencakup pendekatan \textit{re-ranker} terlatih \citep{ren2021rocketqav2} dan pendekatan berbasis model bahasa \textit{listwise} \citep{sun2023rankgpt}. Hasil \gls{slm} teroptimasi tersebut difungsikan sebagai mesin penalaran agen yang dijalankan pada platform otomatisasi alur kerja \textbf{n8n}\footnote{\url{https://n8n.io}}, sehingga keluaran model langsung diuji dalam konteks \textit{workflow automation} yang nyata. Garis besar alur inferensi diuraikan pada \textit{pseudocode} \ref{alg:pipeline}.
@@ -39,24 +49,50 @@ Sistem yang diusulkan terdiri atas dua jalur optimasi yang saling melengkapi. Pe
 Konfigurasi yang dieksplorasi mencakup peringkat \gls{lora} ($r$), faktor penskalaan, dan modul sasaran; jumlah dokumen yang diambil ($k$) dan disisakan setelah \gls{reranking} ($k'$); serta jenis \textit{re-ranker}. % TODO: tetapkan rentang nilai hyperparameter final.
 
 \section{Rancangan Pengujian}
-Untuk menjawab rumusan masalah, dilakukan studi ablasi yang membandingkan beberapa konfigurasi: (K1) model dasar tanpa intervensi sebagai \textit{baseline}; (K2) model dasar + \gls{lora}; (K3) model dasar + \gls{rag} tanpa \gls{reranking}; (K4) model dasar + \gls{rag} + \gls{reranking}; dan (K5) model dasar + \gls{lora} + \gls{rag} + \gls{reranking}. Perbandingan antar-konfigurasi memungkinkan pengukuran kontribusi tiap komponen dan interaksinya.
+Pengujian dirancang sebagai studi ablasi untuk mengisolasi kontribusi tiap komponen terhadap akurasi agen sekaligus menjawab tiap rumusan masalah.
 
-Variabel terikat (akurasi) diukur dengan metrik pada Tabel \ref{tab:metrik}, yang mencakup ketepatan jawaban, penyelesaian tugas, efisiensi, serta keandalan.
+\subsection{Skenario Ablasi}
+Lima konfigurasi dibandingkan secara bertingkat: (K1) model dasar tanpa intervensi sebagai \textit{baseline}; (K2) model dasar + \gls{lora}; (K3) model dasar + \gls{rag} tanpa \gls{reranking}; (K4) model dasar + \gls{rag} + \gls{reranking}; dan (K5) sistem usulan penuh, yaitu model dasar + \gls{lora} + \gls{rag} + \gls{reranking}. Desain bertingkat ini memungkinkan setiap komponen diukur kontribusinya melalui perbandingan terkendali, sebagaimana dipetakan pada Tabel \ref{tab:ablasi}. Untuk menjawab pertanyaan ketiga, jenis \textit{re-ranker} (mis. \textit{cross-encoder} terlatih versus \textit{listwise} berbasis model bahasa) divariasikan pada K4 dan K5, lalu dinilai keseimbangan akurasi terhadap latensinya.
 
-\begin{table}[!h]
+\begin{table}[H]
     \centering
-    \caption{Metrik Evaluasi}
-    \label{tab:metrik}
-    \begin{tabular}{p{0.26\linewidth} p{0.62\linewidth}}
+    \caption{Pemetaan Skenario Ablasi terhadap Komponen dan Rumusan Masalah}
+    \label{tab:ablasi}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{clcccp{0.30\linewidth}c}
         \toprule
-        \textbf{Aspek} & \textbf{Metrik} \\
+        \textbf{Kode} & \textbf{Konfigurasi} & \textbf{LoRA} & \textbf{RAG} & \textbf{Re-rank} & \textbf{Komponen yang diisolasi} & \textbf{Menjawab} \\
         \midrule
-        Ketepatan jawaban & \textit{F1-Score}, \textit{Exact Match} (EM), dan \textit{ROUGE-L} \\
-        Penyelesaian tugas & \textit{Task Completion Rate} pada tugas alur kerja agen \\
-        Efisiensi & \textit{Response Latency} (ms) dan penggunaan memori \gls{gpu} \\
-        Keandalan & \textit{Hallucination Rate}, dievaluasi mengikuti kerangka penilaian \gls{rag} \citep{es2024ragas, chen2024ragbench} \\
+        K1 & \textit{Baseline} & $-$ & $-$ & $-$ & Titik acuan kinerja & -- \\
+        K2 & + LoRA & $\bullet$ & $-$ & $-$ & Kontribusi LoRA murni (vs K1) & RQ1 \\
+        K3 & + RAG & $-$ & $\bullet$ & $-$ & Kontribusi RAG tanpa \textit{re-ranking} (vs K1) & RQ2 \\
+        K4 & + RAG + \textit{re-rank} & $-$ & $\bullet$ & $\bullet$ & Efek \textit{re-ranking} (vs K3) & RQ2, RQ3 \\
+        K5 & Usulan penuh & $\bullet$ & $\bullet$ & $\bullet$ & Sinergi LoRA + RAG ber-\textit{re-ranking} (vs K2, K4) & RQ2 \\
         \bottomrule
     \end{tabular}
+    }
 \end{table}
 
-Eksperimen dijalankan pada lingkungan perangkat keras yang ditetapkan, dengan \textit{seed} acak yang dikunci, konfigurasi yang disimpan sebagai berkas, dan kode yang ditandai versinya untuk menjamin reprodusibilitas. % TODO: cantumkan spesifikasi perangkat keras (GPU) yang dipakai.
+\subsection{Metrik Evaluasi dan Justifikasinya}
+Variabel terikat (akurasi) diukur dengan metrik pada Tabel \ref{tab:metrik}. Pemilihan metrik didasarkan pada relevansinya terhadap karakteristik tugas agen dan tujuan penelitian, bukan sekadar konvensi.
+
+\begin{table}[H]
+    \centering
+    \caption{Metrik Evaluasi dan Justifikasi Pemilihannya}
+    \label{tab:metrik}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{p{0.16\linewidth} p{0.28\linewidth} p{0.46\linewidth}}
+        \toprule
+        \textbf{Aspek} & \textbf{Metrik} & \textbf{Justifikasi} \\
+        \midrule
+        Ketepatan jawaban & \textit{F1-Score}, \textit{Exact Match} (EM) & Metrik baku untuk tugas tanya--jawab dan ekstraksi; menilai kebenaran jawaban secara langsung \\
+        & \textit{ROUGE-L} & Menilai kemiripan jawaban bentuk panjang terhadap rujukan \\
+        Penyelesaian tugas & \textit{Task Completion Rate} & Mengukur keberhasilan agen menuntaskan alur kerja \textit{end-to-end}, bukan sekadar menjawab pertanyaan tunggal \\
+        Efisiensi & \textit{Response Latency} (ms), memori \gls{gpu} & Menentukan kelayakan praktis penerapan lokal yang mengutamakan kecepatan dan sumber daya terbatas \\
+        Keandalan & \textit{Hallucination Rate} & Inti persoalan yang hendak ditekan oleh \gls{rag}; dievaluasi mengikuti kerangka penilaian \gls{rag} \citep{es2024ragas, chen2024ragbench, ovadia2024ftrag} \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+Dengan demikian, metrik ketepatan dan keandalan menjawab inti peningkatan akurasi (RQ1 dan RQ2), sedangkan metrik efisiensi menjadi dasar penilaian keseimbangan pada RQ3. Eksperimen dijalankan pada lingkungan perangkat keras yang ditetapkan, dengan \textit{seed} acak yang dikunci, konfigurasi yang disimpan sebagai berkas, dan kode yang ditandai versinya untuk menjamin reprodusibilitas. % TODO: cantumkan spesifikasi perangkat keras (GPU) yang dipakai.

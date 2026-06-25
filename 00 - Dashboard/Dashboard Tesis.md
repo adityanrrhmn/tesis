@@ -5,19 +5,25 @@ jenis: dashboard
 # 🎓 Dashboard Tesis
 
 > [!info] Identitas
-> - **Judul (sementara):** _belum ditetapkan_
-> - **Bidang:** Magister Kecerdasan Artifisial
-> - **Pembimbing 1:** _—_
-> - **Pembimbing 2:** _—_
-> - **Target sidang:** _—_
+> - **Nama / NIM:** Aditya Nurrohman / 25/574386/PPA/07244
+> - **Judul:** Optimasi Akurasi *Local Small Language Model* Menggunakan *Fine-Tuning* LoRA dan *Re-Ranked Retrieval-Augmented Generation* pada *AI Agent Workflow Automation*
+> - **Prodi:** S2 Magister Kecerdasan Artifisial — DIKE, FMIPA UGM
+> - **Pembimbing 1:** Prof. Dr. Azhari, MT.
+> - **Pembimbing 2:** Dr.techn. Guntur Budi Herwanto, S.Kom., M.Cs.
+> - **Tahap:** Penyusunan proposal (disetujui pembimbing untuk lanjut)
+> - **Target sidang:** _belum ditentukan_
 
 ## 📌 Status saat ini
 
+> [!success] Sudah selesai
+> - [x] Setup workspace + 8 MCP + template LaTeX MKA
+> - [x] Bibliografi 38 paper terverifikasi (non-MDPI, 0 halusinasi)
+> - [x] Draf proposal BAB I–V terkompilasi (PDF)
+
 > [!todo] Langkah berikutnya
-> - [ ] Selesaikan setup MCP → lihat [[SETUP MCP]]
-> - [ ] Tetapkan topik & rumusan masalah (BAB I)
-> - [ ] Kumpulkan 15–20 paper kunci untuk tinjauan pustaka
-> - [ ] Susun kerangka metodologi (BAB III)
+> - [ ] Lengkapi `% TODO` di `.tex`: dataset domain, model SLM final, GPU, hyperparameter
+> - [ ] Perkuat justifikasi metode & ablation (sedang dikerjakan)
+> - [ ] Finalisasi → ajukan seminar proposal
 
 ## 🗂️ Navigasi cepat
 

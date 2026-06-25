@@ -74,4 +74,24 @@ Sejumlah penelitian terdekat dengan tesis ini dirangkum pada Tabel \ref{tab:tinj
 \end{longtable}
 
 \section{Posisi Penelitian dan Celah}
-Tinjauan di atas memperlihatkan dua celah penelitian. \textbf{Pertama (G1)}, pemanfaatan \gls{slm} lokal untuk \gls{ai} \textit{agent workflow automation} masih terbatas: \citet{erdogan2024tinyagent} berfokus pada \textit{function-calling} tanpa \gls{rag}, sedangkan \citet{niu2025flow} dan \citet{han2026legomem} menyasar sistem multi-agen berbasis \gls{llm} besar. \textbf{Kedua (G2)}, peningkatan \gls{rag} melalui \gls{reranking} umumnya diteliti terpisah dari \gls{finetuning}: pendekatan seperti \citet{yu2024rankrag} dan \citet{lee2025setr} memperbaiki pemeringkatan tanpa \gls{lora}, sementara \citet{saha2024quimrag} memakai \gls{rag} tanpa \textit{fine-tuning}. Belum ada penelitian pada venue bereputasi yang secara sistematis memadukan \gls{finetuning} \gls{lora} dan \gls{rag} ber-\gls{reranking} dalam satu \textit{pipeline} \gls{slm} lokal untuk otomatisasi alur kerja berbasis agen, sekaligus mengukur kontribusi tiap komponen dan keseimbangannya dengan efisiensi. Kekosongan inilah yang diisi penelitian ini.
+Tinjauan di atas memperlihatkan dua celah penelitian. \textbf{Pertama (G1)}, pemanfaatan \gls{slm} lokal untuk \gls{ai} \textit{agent workflow automation} masih terbatas: \citet{erdogan2024tinyagent} berfokus pada \textit{function-calling} tanpa \gls{rag}, sedangkan \citet{niu2025flow} dan \citet{han2026legomem} menyasar sistem multi-agen berbasis \gls{llm} besar. \textbf{Kedua (G2)}, peningkatan \gls{rag} melalui \gls{reranking} umumnya diteliti terpisah dari \gls{finetuning}: pendekatan seperti \citet{yu2024rankrag} dan \citet{lee2025setr} memperbaiki pemeringkatan tanpa \gls{lora}, sementara \citet{saha2024quimrag} memakai \gls{rag} tanpa \textit{fine-tuning}. Belum ada penelitian pada venue bereputasi yang secara sistematis memadukan \gls{finetuning} \gls{lora} dan \gls{rag} ber-\gls{reranking} dalam satu \textit{pipeline} \gls{slm} lokal untuk otomatisasi alur kerja berbasis agen, sekaligus mengukur kontribusi tiap komponen dan keseimbangannya dengan efisiensi. Cakupan komponen pada penelitian terdahulu dibandingkan penelitian ini diringkas pada Tabel \ref{tab:matriks-gap}; tampak bahwa tidak ada satu pun penelitian terdahulu yang mencakup kelima komponen sekaligus. Kekosongan inilah yang diisi penelitian ini.
+
+\begin{table}[H]
+    \centering
+    \caption{Matriks Cakupan Komponen pada Penelitian Terdahulu ($\bullet$ = mencakup)}
+    \label{tab:matriks-gap}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Penelitian} & \textbf{SLM lokal} & \textbf{LoRA} & \textbf{RAG} & \textbf{Re-ranking} & \textbf{Agent workflow} \\
+        \midrule
+        \citet{yu2024rankrag} & $-$ & $-$ & $\bullet$ & $\bullet$ & $-$ \\
+        \citet{saha2024quimrag} & $\bullet$ & $-$ & $\bullet$ & $-$ & $-$ \\
+        \citet{erdogan2024tinyagent} & $\bullet$ & $-$ & $-$ & $-$ & $\bullet$ \\
+        \citet{niu2025flow} & $-$ & $-$ & $-$ & $-$ & $\bullet$ \\
+        \citet{lee2025setr} & $-$ & $-$ & $\bullet$ & $\bullet$ & $-$ \\
+        \textbf{Penelitian ini} & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
