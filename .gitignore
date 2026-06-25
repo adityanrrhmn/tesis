@@ -53,6 +53,7 @@ mlruns/
 *.lof
 *.lot
 *.lol
+*.loa
 *.bbl
 *.blg
 *.bcf
@@ -71,6 +72,8 @@ mlruns/
 *.nav
 *.snm
 *.vrb
+# Output kompilasi utama (regenerable; Figures/*.pdf sumber tetap di-track)
+**/LAPORAN_TESIS.pdf
 
 # ===== Obsidian (workspace lokal) =====
 .obsidian/workspace.json

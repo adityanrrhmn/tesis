@@ -1,22 +1,29 @@
-Bab ini menjelaskan metodologi penelitian, mencakup deskripsi umum, akuisisi data, rancangan model yang diusulkan, serta rancangan pengujian. Penelitian ini bersifat eksperimental kuantitatif dengan pendekatan pengembangan dan evaluasi sistem.
+Bab ini menjelaskan metodologi penelitian, mencakup deskripsi umum dan variabel penelitian, akuisisi data, rancangan model yang diusulkan, serta rancangan pengujian. Penelitian ini bersifat eksperimental kuantitatif dengan pendekatan pengembangan dan evaluasi sistem.
 
 \section{Deskripsi Umum Penelitian}
-Penelitian ini bertujuan mengoptimalkan akurasi \gls{slm} lokal untuk \gls{ai} \textit{agent workflow automation} melalui kombinasi \gls{finetuning} \gls{lora} dan \gls{rag} ber-\gls{reranking}. Alur penelitian terdiri atas lima tahap: (1) penyiapan data dan model dasar; (2) penerapan \gls{finetuning} \gls{lora}; (3) pembangunan \textit{pipeline} \gls{rag} dengan \gls{reranking}; (4) integrasi dan eksperimen ablasi; serta (5) evaluasi dan analisis. Variabel bebas penelitian adalah strategi optimasi (\gls{lora}, \gls{rag}, \gls{reranking}, dan kombinasinya), sedangkan variabel terikat adalah akurasi tugas, kualitas \textit{retrieval}, dan efisiensi komputasi.
+Penelitian ini bertujuan mengoptimalkan akurasi \gls{slm} lokal untuk \gls{ai} \textit{agent workflow automation} melalui kombinasi \gls{finetuning} \gls{lora} dan \gls{rag} ber-\gls{reranking}. Alur penelitian terdiri atas lima tahap: (1) penyiapan data dan model dasar; (2) penerapan \gls{finetuning} \gls{lora}; (3) pembangunan \textit{pipeline} \gls{rag} dengan \gls{reranking}; (4) integrasi ke dalam alur kerja agen dan eksperimen ablasi; serta (5) evaluasi dan analisis.
+
+Variabel penelitian dirumuskan sebagai berikut:
+\begin{itemize}
+    \item \textbf{Variabel bebas pertama ($X_1$): \gls{finetuning} \gls{lora}}, yaitu adaptasi model dasar ke domain/tugas menggunakan \gls{lora} \citep{hu2022lora}.
+    \item \textbf{Variabel bebas kedua ($X_2$): \gls{rag} ber-\gls{reranking}}, yaitu augmentasi pengetahuan eksternal yang relevansinya ditingkatkan melalui tahap \gls{reranking} \citep{lewis2020rag, sun2023rankgpt}.
+    \item \textbf{Variabel terikat ($Y$): akurasi}, yaitu ketepatan keluaran model pada tugas otomatisasi alur kerja agen, yang diukur dengan sejumlah metrik (Sub Bab Rancangan Pengujian).
+\end{itemize}
 
 \section{Akuisisi Data}
 Data yang digunakan meliputi tiga komponen:
 \begin{enumerate}
     \item \textbf{Model dasar (\textit{base} \gls{slm}):} \gls{slm} terbuka yang dapat dijalankan lokal, dengan kandidat antara lain Phi-3-mini \citep{abdin2024phi3}, Qwen2.5 berukuran kecil \citep{qwen2024qwen25}, atau TinyLlama \citep{zhang2024tinyllama}. % TODO (Aditya): tetapkan model final beserta alasannya.
-    \item \textbf{Data \gls{finetuning}:} kumpulan data instruksi untuk tugas otomatisasi alur kerja agen (mis. pemanggilan \textit{tool}, penalaran prosedural, dan menjawab berbasis domain). % TODO: tetapkan sumber/format dataset dan jumlah sampel.
+    \item \textbf{Data \gls{finetuning}:} data instruksi sebagai basis adaptasi, mengacu pada dataset instruksi Alpaca\footnote{\url{https://huggingface.co/datasets/tatsu-lab/alpaca}} sebagai titik awal, yang selanjutnya dilengkapi/diadaptasi dengan data instruksi spesifik tugas agen (mis. pemanggilan \textit{tool} dan penalaran prosedural). % TODO: tetapkan komposisi & jumlah sampel data domain.
     \item \textbf{Basis pengetahuan \gls{rag}:} korpus dokumen domain yang diindeks sebagai basis \textit{retrieval}. % TODO: tetapkan korpus domain.
 \end{enumerate}
 Data dibagi menjadi himpunan latih, validasi, dan uji dengan proporsi yang ditetapkan secara konsisten, dan seluruh praproses (pembersihan, tokenisasi, penyusunan \textit{prompt}) didokumentasikan agar reprodusibel.
 
 \section{Rancangan Model}
-Sistem yang diusulkan terdiri atas dua jalur optimasi yang saling melengkapi. Pertama, model dasar diadaptasi ke domain melalui \gls{finetuning} \gls{lora} \citep{hu2022lora}, bila perlu dengan kuantisasi mengikuti skema QLoRA untuk menghemat memori \citep{dettmers2023qlora}; implementasi pelatihan memanfaatkan perkakas \gls{finetuning} yang telah mapan \citep{zheng2024llamafactory}. Kedua, pada tahap inferensi, model di-augmentasi dengan \gls{rag} \citep{lewis2020rag, gao2023ragsurvey} yang dilengkapi tahap \gls{reranking} untuk memastikan konteks paling relevan diberikan kepada model, mengingat keterbatasan pemanfaatan konteks panjang pada model kecil \citep{liu2024lostmiddle}. Mekanisme \gls{reranking} yang dibandingkan mencakup pendekatan \textit{re-ranker} terlatih \citep{ren2021rocketqav2} dan pendekatan berbasis model bahasa \textit{listwise} \citep{sun2023rankgpt}. Garis besar alur inferensi diuraikan pada \textit{pseudocode} \ref{alg:pipeline}.
+Sistem yang diusulkan terdiri atas dua jalur optimasi yang saling melengkapi. Pertama, model dasar diadaptasi ke domain melalui \gls{finetuning} \gls{lora} \citep{hu2022lora}, bila perlu dengan kuantisasi mengikuti skema QLoRA untuk menghemat memori \citep{dettmers2023qlora}; implementasi pelatihan memanfaatkan perkakas \gls{finetuning} yang telah mapan \citep{zheng2024llamafactory}. Kedua, pada tahap inferensi, model di-augmentasi dengan \gls{rag} \citep{lewis2020rag, gao2023ragsurvey} yang dilengkapi tahap \gls{reranking} untuk memastikan konteks paling relevan diberikan kepada model, mengingat keterbatasan pemanfaatan konteks panjang pada model kecil \citep{liu2024lostmiddle}. Mekanisme \gls{reranking} yang dibandingkan mencakup pendekatan \textit{re-ranker} terlatih \citep{ren2021rocketqav2} dan pendekatan berbasis model bahasa \textit{listwise} \citep{sun2023rankgpt}. Hasil \gls{slm} teroptimasi tersebut difungsikan sebagai mesin penalaran agen yang dijalankan pada platform otomatisasi alur kerja \textbf{n8n}\footnote{\url{https://n8n.io}}, sehingga keluaran model langsung diuji dalam konteks \textit{workflow automation} yang nyata. Garis besar alur inferensi diuraikan pada \textit{pseudocode} \ref{alg:pipeline}.
 
 \begin{algorithm}[H]
-\caption{Alur Inferensi SLM dengan LoRA dan Re-ranked RAG}
+\caption{Alur Inferensi SLM dengan LoRA dan Re-ranked RAG pada Agen}
 \label{alg:pipeline}
 \begin{algorithmic}[1]
 \Procedure{JawabAgen}{kueri $q$, basis pengetahuan $\mathcal{D}$, model $M_{\text{LoRA}}$}
@@ -34,7 +41,7 @@ Konfigurasi yang dieksplorasi mencakup peringkat \gls{lora} ($r$), faktor penska
 \section{Rancangan Pengujian}
 Untuk menjawab rumusan masalah, dilakukan studi ablasi yang membandingkan beberapa konfigurasi: (K1) model dasar tanpa intervensi sebagai \textit{baseline}; (K2) model dasar + \gls{lora}; (K3) model dasar + \gls{rag} tanpa \gls{reranking}; (K4) model dasar + \gls{rag} + \gls{reranking}; dan (K5) model dasar + \gls{lora} + \gls{rag} + \gls{reranking}. Perbandingan antar-konfigurasi memungkinkan pengukuran kontribusi tiap komponen dan interaksinya.
 
-Metrik evaluasi yang digunakan dikelompokkan menjadi tiga, sebagaimana Tabel \ref{tab:metrik}.
+Variabel terikat (akurasi) diukur dengan metrik pada Tabel \ref{tab:metrik}, yang mencakup ketepatan jawaban, penyelesaian tugas, efisiensi, serta keandalan.
 
 \begin{table}[!h]
     \centering
@@ -44,9 +51,10 @@ Metrik evaluasi yang digunakan dikelompokkan menjadi tiga, sebagaimana Tabel \re
         \toprule
         \textbf{Aspek} & \textbf{Metrik} \\
         \midrule
-        Akurasi tugas & \textit{Exact Match}, F1, dan/atau akurasi pemanggilan \textit{tool} sesuai tugas agen \\
-        Kualitas \textit{retrieval}/jawaban & nDCG/\textit{recall} untuk \textit{retrieval}; metrik berbasis \gls{rag} seperti \textit{faithfulness} dan \textit{answer relevance} \citep{es2024ragas, chen2024ragbench} \\
-        Efisiensi & Latensi inferensi, penggunaan memori \gls{gpu}, dan jumlah parameter terlatih \\
+        Ketepatan jawaban & \textit{F1-Score}, \textit{Exact Match} (EM), dan \textit{ROUGE-L} \\
+        Penyelesaian tugas & \textit{Task Completion Rate} pada tugas alur kerja agen \\
+        Efisiensi & \textit{Response Latency} (ms) dan penggunaan memori \gls{gpu} \\
+        Keandalan & \textit{Hallucination Rate}, dievaluasi mengikuti kerangka penilaian \gls{rag} \citep{es2024ragas, chen2024ragbench} \\
         \bottomrule
     \end{tabular}
 \end{table}

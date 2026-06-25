@@ -1,26 +1,25 @@
-Bagian ini menyajikan rencana jadwal penelitian beserta tahapan, target luaran, dan estimasi waktu pelaksanaan. Jadwal disusun dengan mempertimbangkan kelayakan dan dapat disesuaikan mengikuti arahan pembimbing. Rincian tahapan dan estimasi waktu ditunjukkan pada Tabel \ref{tab:jadwal_penelitian}.
+Bagian ini menyajikan rencana jadwal penelitian beserta tahapan dan estimasi waktu pelaksanaan, mengikuti rencana yang telah dipresentasikan dan disetujui pembimbing. Jadwal dapat disesuaikan mengikuti kalender akademik. Matriks kegiatan ditunjukkan pada Tabel \ref{tab:jadwal_penelitian}.
 
 \begin{table}[!h]
     \centering
     \caption{Jadwal Kegiatan Penelitian}
     \label{tab:jadwal_penelitian}
     \resizebox{\linewidth}{!}{
-    \begin{tabular}{clp{5.5cm}ll}
+    \begin{tabular}{clcccccccccc}
     \toprule
-        No & Kegiatan & Target/Luaran & Mulai & Selesai \\
+        No & Kegiatan & Mei & Jun & Jul & Agu & Sep & Okt & Nov & Des & Jan & Feb \\
     \midrule
-        1 & Studi literatur dan penyusunan proposal & Proposal siap diseminarkan & 02-06-2026 & 18-07-2026 \\
-        2 & Seminar proposal & Proposal disetujui & 21-07-2026 & 08-08-2026 \\
-        3 & Penyiapan data dan model dasar & Dataset terkurasi dan \textit{base} SLM siap & 11-08-2026 & 12-09-2026 \\
-        4 & Implementasi \textit{fine-tuning} LoRA & Model hasil adaptasi LoRA & 15-09-2026 & 17-10-2026 \\
-        5 & Implementasi RAG dan \textit{re-ranking} & \textit{Pipeline} RAG ber-\textit{re-ranking} & 20-10-2026 & 21-11-2026 \\
-        6 & Eksperimen dan studi ablasi & Hasil eksperimen seluruh konfigurasi & 24-11-2026 & 09-01-2027 \\
-        7 & Analisis hasil dan pembahasan & Temuan dan analisis & 12-01-2027 & 06-02-2027 \\
-        8 & Penyusunan tesis dan seminar hasil & Draf tesis dan seminar hasil & 09-02-2027 & 20-03-2027 \\
-        9 & Revisi dan sidang tesis & Tesis final dan kelulusan & 23-03-2027 & 24-04-2027 \\
+        1 & Identifikasi masalah \& studi literatur & X & X & & & & & & & & \\
+        2 & Penyusunan proposal tesis & & X & X & X & & & & & & \\
+        3 & Pengumpulan \& penyusunan dataset & & & & X & X & X & & & & \\
+        4 & \textit{Fine-tuning} \textit{Local} SLM (LoRA) & & & & & & X & X & & & \\
+        5 & Implementasi RAG \& \textit{re-ranking} & & & & & & & X & X & X & \\
+        6 & Pengujian \& evaluasi sistem & & & & & & & & X & X & \\
+        7 & Analisis hasil penelitian & & & & & & & & & X & X \\
+        8 & Penulisan tesis \& revisi & & & & & & & & X & X & X \\
     \bottomrule
     \end{tabular}
     }
 \end{table}
 
-% TODO (Aditya): sesuaikan tanggal mengikuti kalender akademik dan arahan pembimbing.
+Keterangan: tanda ``X'' menunjukkan periode pelaksanaan tiap kegiatan. % TODO (Aditya): sesuaikan tahun dan bulan mengikuti kalender akademik serta arahan pembimbing.

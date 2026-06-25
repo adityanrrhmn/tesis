@@ -4,19 +4,19 @@ Bab ini menyajikan tinjauan sistematis atas penelitian terdahulu yang relevan de
 Tren penelitian model bahasa bergeser dari sekadar memperbesar ukuran menuju efisiensi, melahirkan kelas \gls{slm} yang menyeimbangkan kemampuan dan biaya komputasi \citep{wang2025slmsurvey}. \citet{abdin2024phi3} menunjukkan bahwa model 3,8 miliar parameter (Phi-3-mini) yang dilatih dengan kurasi data berkualitas dapat menyaingi model yang jauh lebih besar dan tetap mampu berjalan di perangkat ponsel. Pendekatan lain mencapai efisiensi melalui pra-pelatihan ringkas seperti TinyLlama \citep{zhang2024tinyllama}, penyediaan beragam ukuran model terbuka seperti Qwen2.5 \citep{qwen2024qwen25}, maupun pemangkasan terstruktur dari model besar seperti Sheared-LLaMA \citep{xia2023sheared}. Karya-karya ini menegaskan kelayakan \gls{slm} untuk penerapan lokal, sekaligus menyoroti bahwa kesenjangan akurasi terhadap model besar masih menjadi tantangan terbuka.
 
 \section{Parameter-Efficient Fine-Tuning dan LoRA}
-\citet{ding2023delta} memberikan tinjauan menyeluruh atas \gls{peft} dan menunjukkan bahwa pengoptimalan sebagian kecil parameter dapat mendekati kinerja \gls{finetuning} penuh. Metode \gls{lora} \citep{hu2022lora} menjadi tonggak penting dengan menyuntikkan matriks dekomposisi berperingkat rendah pada arsitektur \textit{transformer}. Pengembangan lanjutan mencakup QLoRA yang menggabungkan kuantisasi 4-bit untuk efisiensi memori \citep{dettmers2023qlora}, DyLoRA yang menghindari pencarian peringkat secara manual \citep{valipour2023dylora}, serta kerangka adapter terpadu untuk \gls{slm} \citep{hu2023llmadapters}. Ketersediaan perkakas seperti LlamaFactory \citep{zheng2024llamafactory} mempermudah penerapan teknik-teknik tersebut secara praktis. Tinjauan khusus oleh \citet{mao2024lorasurvey} memetakan berbagai varian \gls{lora} beserta arah pengembangannya.
+\citet{ding2023delta} memberikan tinjauan menyeluruh atas \gls{peft} dan menunjukkan bahwa pengoptimalan sebagian kecil parameter dapat mendekati kinerja \gls{finetuning} penuh. Metode \gls{lora} \citep{hu2022lora} menjadi tonggak penting dengan menyuntikkan matriks dekomposisi berperingkat rendah pada arsitektur \textit{transformer}. Pengembangan lanjutan mencakup QLoRA yang menggabungkan kuantisasi 4-bit untuk efisiensi memori \citep{dettmers2023qlora}, DyLoRA yang menghindari pencarian peringkat secara manual \citep{valipour2023dylora}, serta kerangka adapter terpadu untuk \gls{slm} \citep{hu2023llmadapters}. Ketersediaan perkakas seperti LlamaFactory \citep{zheng2024llamafactory} mempermudah penerapan teknik tersebut, dan tinjauan oleh \citet{mao2024lorasurvey} memetakan berbagai varian \gls{lora} beserta arah pengembangannya.
 
 \section{Retrieval-Augmented Generation}
-\citet{lewis2020rag} memperkenalkan \gls{rag} yang memadukan memori parametrik dan non-parametrik untuk tugas padat pengetahuan. Tinjauan oleh \citet{gao2023ragsurvey} mengklasifikasikan perkembangan \gls{rag} dari \textit{naive}, \textit{advanced}, hingga \textit{modular}. \citet{ram2023incontext} menunjukkan bahwa pendekatan In-Context RALM mampu meningkatkan kinerja model bahasa tanpa mengubah arsitekturnya, sementara \citet{jiang2023activerag} mengusulkan pengambilan dokumen secara aktif selama proses generasi. Untuk pengukuran, \citet{chen2024ragbench} dan \citet{es2024ragas} menyediakan tolok ukur serta metrik evaluasi otomatis bagi sistem \gls{rag}.
+\citet{lewis2020rag} memperkenalkan \gls{rag} yang memadukan memori parametrik dan non-parametrik untuk tugas padat pengetahuan, dan tinjauan oleh \citet{gao2023ragsurvey} mengklasifikasikan perkembangannya dari \textit{naive}, \textit{advanced}, hingga \textit{modular}. \citet{ram2023incontext} menunjukkan peningkatan kinerja melalui In-Context RALM tanpa mengubah arsitektur, sementara \citet{jiang2023activerag} mengusulkan pengambilan dokumen secara aktif selama generasi. Granularitas unit \textit{retrieval} juga terbukti memengaruhi kinerja secara signifikan \citep{chen2024densex}, dan studi praktik terbaik \gls{rag} memberikan panduan empiris untuk menyeimbangkan kinerja dan efisiensi \citep{wang2024ragbestpractices}. Untuk pengukuran, \citet{chen2024ragbench} dan \citet{es2024ragas} menyediakan tolok ukur serta metrik evaluasi otomatis bagi sistem \gls{rag}.
 
 \section{Re-ranking pada Sistem Retrieval}
-Kualitas konteks yang diberikan kepada model generatif sangat menentukan akurasi keluaran. \citet{liu2024lostmiddle} membuktikan bahwa model bahasa kurang efektif memanfaatkan informasi yang terletak di tengah konteks panjang, sehingga urutan dokumen menjadi krusial. \citet{ren2021rocketqav2} mengusulkan pelatihan gabungan \textit{retriever} dan \textit{re-ranker} secara terpadu. Perkembangan terbaru memanfaatkan model bahasa sebagai \textit{re-ranker}: \citet{sun2023rankgpt} menunjukkan bahwa model bahasa dapat menjadi agen pemeringkat yang kompetitif dan kemampuannya dapat didistilasi ke model kecil, sedangkan \citet{ma2023lrl}, \citet{pradeep2023rankvicuna}, dan \citet{pradeep2023rankzephyr} mengembangkan \textit{re-ranker} \textit{listwise} berbasis model terbuka.
+Kualitas dan urutan konteks yang diberikan kepada model generatif sangat menentukan akurasi keluaran. \citet{liu2024lostmiddle} membuktikan bahwa model bahasa kurang efektif memanfaatkan informasi yang terletak di tengah konteks panjang, sehingga \gls{reranking} menjadi krusial. \citet{ren2021rocketqav2} mengusulkan pelatihan gabungan \textit{retriever} dan \textit{re-ranker}, sedangkan perkembangan terbaru memanfaatkan model bahasa sebagai pemeringkat \citep{sun2023rankgpt, ma2023lrl, pradeep2023rankvicuna}. \citet{yu2024rankrag} menyatukan pemeringkatan konteks dan generasi dalam satu \gls{llm} melalui \textit{instruction tuning}, sementara \citet{lee2025setr} mengusulkan pergeseran dari pemeringkatan ke pemilihan himpunan pasase untuk pertanyaan multi-lompatan.
 
 \section{AI Agent dan Workflow Automation}
-\citet{wang2024agentsurvey} menyusun tinjauan komprehensif arsitektur agen otonom berbasis model bahasa. Kemampuan inti agen mencakup penggunaan \textit{tool} eksternal \citep{schick2023toolformer}, penalaran bertahap yang lebih terstruktur \citep{yao2023tot}, serta perencanaan dan memori sebagaimana ditunjukkan pada agen generatif \citep{park2023generativeagents}. Karya-karya ini menjadi landasan bagi penerapan model bahasa pada otomatisasi alur kerja.
+\citet{wang2024agentsurvey} menyusun tinjauan komprehensif arsitektur agen otonom berbasis model bahasa. Kemampuan inti agen mencakup penggunaan \textit{tool} eksternal \citep{schick2023toolformer}, penalaran bertahap \citep{yao2023tot}, serta perencanaan dan memori \citep{park2023generativeagents}. Pada konteks \gls{slm}, \citet{erdogan2024tinyagent} menunjukkan bahwa \gls{slm} dapat menjalankan \textit{function-calling} secara akurat di perangkat \textit{edge}, namun tanpa mekanisme \gls{rag}. Pada sisi orkestrasi, \citet{niu2025flow} dan \citet{han2026legomem} mengembangkan kerangka alur kerja agen yang modular dan bermemori, tetapi berfokus pada sistem multi-agen berbasis \gls{llm} besar.
 
-\section{Posisi Penelitian}
-Tinjauan di atas menunjukkan bahwa \gls{lora}, \gls{rag}, dan \gls{reranking} masing-masing efektif meningkatkan kinerja model bahasa, namun umumnya diteliti secara terpisah dan kerap pada model berukuran besar. Belum banyak penelitian yang secara sistematis memadukan \gls{finetuning} \gls{lora} dengan \gls{rag} ber-\gls{reranking} khusus untuk meningkatkan akurasi \gls{slm} lokal pada konteks \gls{ai} \textit{agent workflow automation}, sekaligus menganalisis kontribusi tiap komponen dan keseimbangannya dengan efisiensi komputasi. Kekosongan inilah yang menjadi fokus penelitian ini. Ringkasan sebagian penelitian terdahulu yang menjadi acuan utama disajikan pada Tabel \ref{tab:tinjauan-pustaka}.
+\section{Penelitian Terdahulu yang Menjadi Acuan Utama}
+Sejumlah penelitian terdekat dengan tesis ini dirangkum pada Tabel \ref{tab:tinjauan-pustaka}. Penelitian-penelitian tersebut menggarap komponen yang sama (\gls{rag}, \gls{reranking}, \gls{finetuning}, atau agen \gls{slm}), namun belum memadukan seluruhnya dalam satu \textit{pipeline} terintegrasi.
 
 \begin{longtable}{p{0.16\linewidth} p{0.24\linewidth} p{0.26\linewidth} p{0.24\linewidth}}
     \caption{Ringkasan Penelitian Terdahulu yang Menjadi Acuan Utama}
@@ -25,53 +25,53 @@ Tinjauan di atas menunjukkan bahwa \gls{lora}, \gls{rag}, dan \gls{reranking} ma
     \textbf{Penelitian} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil Utama} \\
     \hline
     \endfirsthead
-
     \hline
     \textbf{Penelitian} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil Utama} \\
     \hline
     \endhead
-
     \hline
     \multicolumn{4}{r}{\textit{Lanjutan di halaman berikutnya...}} \\
     \endfoot
-
     \hline
     \endlastfoot
 
-    \citet{hu2022lora} &
-    Adaptasi LLM secara hemat parameter &
-    Menyuntikkan matriks berperingkat rendah, bobot dasar dibekukan &
-    Parameter terlatih turun drastis, setara/lebih baik dari \textit{fine-tuning} penuh tanpa latensi tambahan \\
+    \citet{yu2024rankrag} &
+    Menyatukan pemeringkatan konteks dan generasi dalam satu LLM &
+    \textit{Instruction tuning} satu LLM untuk dwifungsi \textit{ranking} + generasi pada RAG &
+    Llama3-RankRAG mengungguli model pembanding kuat pada banyak tolok ukur padat pengetahuan \\
     \hline
 
-    \citet{dettmers2023qlora} &
-    \textit{Fine-tuning} hemat memori &
-    Kuantisasi 4-bit (NF4) dipadu LoRA dan \textit{paged optimizer} &
-    Mampu melatih model besar pada satu GPU dengan kualitas mendekati 16-bit \\
+    \citet{saha2024quimrag} &
+    Meningkatkan QA dari korpus target tanpa \textit{fine-tuning} &
+    RAG di atas LLaMA3-8B + pencocokan indeks terbalik pertanyaan (QuIM) &
+    Mengungguli RAG tradisional pada BERTScore dan RAGAS \\
     \hline
 
-    \citet{lewis2020rag} &
-    Tugas NLP padat pengetahuan &
-    Gabungan model seq2seq pra-latih dengan \textit{retriever} \textit{dense} &
-    Capaian SOTA pada beberapa tugas QA domain terbuka, keluaran lebih faktual \\
+    \citet{erdogan2024tinyagent} &
+    Agen SLM \textit{function-calling} di perangkat \textit{edge} &
+    \textit{Fine-tuning} SLM 1,1B/7B + \textit{tool retrieval} + kuantisasi &
+    Setara/melebihi GPT-4-Turbo untuk \textit{function-calling}, berjalan penuh di \textit{edge} (tanpa RAG) \\
     \hline
 
-    \citet{ram2023incontext} &
-    Meningkatkan LM tanpa ubah arsitektur &
-    In-Context RALM dengan spesialisasi mekanisme \textit{ranking} &
-    Peningkatan kinerja konsisten lintas ukuran model \\
+    \citet{niu2025flow} &
+    Penyesuaian alur kerja agen secara dinamis &
+    Alur kerja sebagai graf AOV + modularitas pada sistem multi-agen LLM &
+    Peningkatan efisiensi eksekusi dan toleransi kesalahan \\
     \hline
 
-    \citet{sun2023rankgpt} &
-    \textit{Re-ranking} relevansi dokumen &
-    Model bahasa sebagai agen pemeringkat \textit{listwise} dan distilasi permutasi &
-    Kompetitif/melebihi metode \textit{supervised}; model distilasi kecil mengungguli model \textit{supervised} lebih besar \\
+    \citet{louis2024legalqa} &
+    QA hukum bentuk panjang berbasis RAG &
+    Pipeline \textit{retrieve-then-read} + dataset LLeQA &
+    Kinerja menjanjikan pada metrik otomatis untuk QA domain spesifik \\
     \hline
 
-    \citet{abdin2024phi3} &
-    SLM berkemampuan tinggi di perangkat lokal &
-    Model 3,8 M parameter dengan kurasi data berkualitas &
-    Setara model jauh lebih besar pada sejumlah tolok ukur, dapat berjalan di ponsel \\
+    \citet{lee2025setr} &
+    Pemilihan himpunan pasase untuk QA multi-lompatan &
+    Pemilihan \textit{set-wise} via penalaran berantai (CoT) &
+    Mengungguli \textit{re-ranker} LLM proprietary dan baseline sumber terbuka \\
     \hline
 
 \end{longtable}
+
+\section{Posisi Penelitian dan Celah}
+Tinjauan di atas memperlihatkan dua celah penelitian. \textbf{Pertama (G1)}, pemanfaatan \gls{slm} lokal untuk \gls{ai} \textit{agent workflow automation} masih terbatas: \citet{erdogan2024tinyagent} berfokus pada \textit{function-calling} tanpa \gls{rag}, sedangkan \citet{niu2025flow} dan \citet{han2026legomem} menyasar sistem multi-agen berbasis \gls{llm} besar. \textbf{Kedua (G2)}, peningkatan \gls{rag} melalui \gls{reranking} umumnya diteliti terpisah dari \gls{finetuning}: pendekatan seperti \citet{yu2024rankrag} dan \citet{lee2025setr} memperbaiki pemeringkatan tanpa \gls{lora}, sementara \citet{saha2024quimrag} memakai \gls{rag} tanpa \textit{fine-tuning}. Belum ada penelitian pada venue bereputasi yang secara sistematis memadukan \gls{finetuning} \gls{lora} dan \gls{rag} ber-\gls{reranking} dalam satu \textit{pipeline} \gls{slm} lokal untuk otomatisasi alur kerja berbasis agen, sekaligus mengukur kontribusi tiap komponen dan keseimbangannya dengan efisiensi. Kekosongan inilah yang diisi penelitian ini.

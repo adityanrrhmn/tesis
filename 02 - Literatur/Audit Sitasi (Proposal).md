@@ -4,7 +4,7 @@ jenis: audit-sitasi
 ---
 # 🛡️ Audit Sitasi — Proposal (Anti-Halusinasi)
 
-> Bukti bahwa **setiap sitasi di proposal merujuk paper NYATA**. Tiap entri ditemukan via MCP (OpenAlex / DBLP / arXiv) dan diverifikasi pengenal stabilnya (DOI atau arXiv-id). Audit otomatis: 29 sitasi dipakai = 29 entri `referensi.bib`, **0 menggantung**.
+> Bukti bahwa **setiap sitasi di proposal merujuk paper NYATA**. Tiap entri ditemukan via MCP (OpenAlex / DBLP / arXiv / Crossref) dan diverifikasi pengenal stabilnya (DOI atau arXiv-id). Audit otomatis terakhir: **37 sitasi dipakai dari 38 entri `referensi.bib`, 0 menggantung**.
 
 **Tanggal audit:** 2026-06-25 · **Berkas:** `01 - Naskah/Proposal (LaTeX MKA)/referensi.bib`
 
@@ -39,6 +39,22 @@ jenis: audit-sitasi
 | 27 | schick2023toolformer | Schick dkk. (2023) | NeurIPS | arXiv:2302.04761 | ✅ |
 | 28 | yao2023tot | Yao dkk. (2023) | NeurIPS | arXiv:2305.10601 | ✅ |
 | 29 | park2023generativeagents | Park dkk. (2023) | UIST (ACM) | 10.1145/3586183.3606763 | ✅ |
+| 30 | yu2024rankrag | Yu dkk. (2024) | NeurIPS | arXiv:2407.02485 | ✅ |
+| 31 | saha2024quimrag | Saha dkk. (2024) | IEEE Access | 10.1109/ACCESS.2024.3513155 | ✅ |
+| 32 | wang2024ragbestpractices | Wang dkk. (2024) | EMNLP | 10.18653/v1/2024.emnlp-main.981 | ✅ |
+| 33 | louis2024legalqa | Louis dkk. (2024) | AAAI | 10.1609/aaai.v38i20.30232 | ✅ |
+| 34 | lee2025setr | Lee dkk. (2025) | ACL | 10.18653/v1/2025.acl-long.861 | ✅ |
+| 35 | chen2024densex | Chen dkk. (2024) | EMNLP | 10.18653/v1/2024.emnlp-main.845 | ✅ |
+| 36 | erdogan2024tinyagent | Erdogan dkk. (2024) | EMNLP (Demo) | 10.18653/v1/2024.emnlp-demo.9 | ✅ |
+| 37 | niu2025flow | Niu dkk. (2025) | ICLR | arXiv:2501.07834 | ✅ |
+| 38 | han2026legomem | Han dkk. (2026) | AAMAS | arXiv:2510.04851 | ✅ |
+
+## Verifikasi referensi PPT (analisis 13 paper rujukan PPT)
+Seluruh 13 paper yang dirujuk di PPT **terbukti NYATA** (tidak ada yang dikarang PPT). Temuan:
+- **8 paper "studi terdahulu" = SEMUANYA MDPI** (Electronics / Applied Sciences). Sesuai keputusan Aditya, **diganti** dengan sumber non-MDPI bereputasi setara (RankRAG/NeurIPS, Best-Practices-RAG/EMNLP, LLeQA/AAAI, SETR/ACL, Dense X/EMNLP) → entri #30–35.
+- **2 atribusi penulis SALAH di PPT** (dikoreksi, tidak dipakai): "SensiLoRA-RAG" sebenarnya **He dkk.** (bukan Ren); "DS-RAG" sebenarnya **Kwon/Bang dkk.** (bukan Park).
+- **4 paper gap NON-MDPI** dipakai untuk memperkuat G1/G2: TinyAgent (#36), Flow (#37), LEGOMem (#38), QuIM-RAG/Saha (#31).
+- Paper gap "Luo dkk. (2026)" ternyata MDPI (*Processes*) → tidak dipakai.
 
 ## Catatan verifikasi
 - **Tidak ada penerbit MDPI / jurnal predator.** Venue = konferensi top AI (NeurIPS, ICLR, ACL, EMNLP, EACL, AAAI, UIST) & jurnal Q1/Q2 Scopus (TACL, Nature Machine Intelligence, ACM TIST, Frontiers of Computer Science).
