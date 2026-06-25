@@ -1,26 +1,48 @@
 \section{Latar Belakang}
-Penulisan latar belakang dan permasalahan disajikan dalam bentuk uraian yang secara kronologis diarahkan untuk langsung menuju rumusan masalah. Dalam latar belakang dan permasalahan dapat dimasukkan beberapa uraian singkat penelitian terdahulu yang dapat memperkuat alasan mengapa penelitian ini akan dilakukan. Apabila diperlukan, pada bagian ini dimungkinkan memuat hipotesis atau dugaan secara umum. 
+Kemajuan \gls{llm} dalam beberapa tahun terakhir telah mendorong perubahan besar pada cara sistem perangkat lunak dibangun, termasuk munculnya paradigma \gls{ai} \textit{agent}, yaitu sistem yang memanfaatkan model bahasa untuk menalar, merencanakan, dan memanggil \textit{tool} eksternal guna menyelesaikan tugas secara otomatis \citep{minaee2024llmsurvey, wang2024agentsurvey}. Kemampuan model bahasa untuk memutuskan kapan dan bagaimana menggunakan \gls{api} atau alat bantu eksternal \citep{schick2023toolformer}, serta menalar secara bertahap untuk memecahkan masalah kompleks \citep{yao2023tot}, menjadikan agen berbasis model bahasa sebagai fondasi yang menjanjikan bagi \gls{workflow} pada berbagai domain \citep{park2023generativeagents}.
 
-Ini cara untuk menggunakan singkatan \gls{nmt} dan istilah \gls{lowresource}. Untuk singkatan, akan direset setiap kali berganti bab dan secara otomatis dijadikan singkatan jika sudah pernah dipanggil dalam bab tersebut, contohnya adalah \gls{nmt} yang sudah pernah dipanggil sebelumnya.
+Namun, sebagian besar agen otomatisasi alur kerja saat ini bertumpu pada \gls{llm} berukuran sangat besar yang umumnya diakses sebagai layanan awan berbayar. Ketergantungan ini menimbulkan sejumlah persoalan praktis, antara lain biaya pemanggilan yang tinggi pada penggunaan berskala besar, latensi jaringan, serta risiko privasi dan kepatuhan ketika data sensitif organisasi harus dikirim ke pihak ketiga. Persoalan tersebut mendorong kebutuhan akan model bahasa yang dapat dijalankan secara lokal (\textit{on-premise}) sehingga organisasi memiliki kendali penuh atas data dan biaya operasionalnya.
+
+\gls{slm}, yaitu model bahasa dengan jumlah parameter relatif kecil sehingga dapat dijalankan pada perangkat keras terbatas, hadir sebagai alternatif yang menarik untuk kebutuhan tersebut \citep{wang2025slmsurvey}. Sejumlah \gls{slm} terbuka terbaru menunjukkan kemampuan yang menjanjikan meskipun berukuran kecil, seperti Phi-3 yang dirancang agar dapat berjalan di perangkat ponsel \citep{abdin2024phi3}, TinyLlama \citep{zhang2024tinyllama}, serta keluarga model Qwen2.5 dengan berbagai ukuran \citep{qwen2024qwen25}. Walaupun demikian, pada tugas yang menuntut penalaran, kepatuhan terhadap instruksi, dan pemanggilan \textit{tool} secara tepat sebagaimana dibutuhkan dalam alur kerja agen, akurasi \gls{slm} masih tertinggal dibandingkan model berukuran besar \citep{wang2025slmsurvey}. Oleh karena itu, dibutuhkan strategi untuk meningkatkan akurasi \gls{slm} lokal agar layak digunakan pada otomatisasi alur kerja berbasis agen.
+
+Salah satu strategi yang efektif untuk meningkatkan kinerja model pada domain spesifik adalah \gls{finetuning}. Namun, \gls{finetuning} penuh terhadap seluruh parameter model semakin tidak efisien seiring bertambahnya ukuran model \citep{ding2023delta}. Pendekatan \gls{peft}, khususnya \gls{lora}, menjawab persoalan ini dengan membekukan bobot model terlatih dan hanya melatih sejumlah kecil matriks berperingkat rendah, sehingga jumlah parameter yang dilatih berkurang drastis tanpa menambah latensi inferensi \citep{hu2022lora}. Varian seperti QLoRA bahkan memungkinkan \gls{finetuning} model pada satu \gls{gpu} dengan memori terbatas melalui kuantisasi \citep{dettmers2023qlora}, sehingga \gls{lora} sangat sesuai untuk konteks pengembangan \gls{slm} lokal dengan sumber daya komputasi yang hemat \citep{mao2024lorasurvey}.
+
+Strategi kedua untuk meningkatkan akurasi tanpa memperbesar model adalah \gls{rag}, yang memadukan model generatif dengan memori non-parametrik berupa basis pengetahuan eksternal yang dapat diakses saat inferensi \citep{lewis2020rag}. \gls{rag} terbukti mengurangi halusinasi dan memungkinkan pembaruan pengetahuan tanpa melatih ulang model \citep{gao2023ragsurvey}. Akan tetapi, efektivitas \gls{rag} sangat bergantung pada kualitas dokumen yang diambil. Model bahasa, terutama yang berukuran kecil dengan jendela konteks terbatas, terbukti tidak robust dalam memanfaatkan informasi yang posisinya berada di tengah konteks panjang, suatu fenomena yang dikenal sebagai \textit{lost in the middle} \citep{liu2024lostmiddle}. Hal ini menyiratkan bahwa sekadar menambahkan banyak dokumen hasil pencarian tahap awal belum tentu meningkatkan akurasi; diperlukan tahap \gls{reranking} untuk memastikan dokumen yang paling relevan menempati posisi teratas. Penelitian terkini menunjukkan bahwa \gls{reranking}, baik dengan pendekatan terlatih \citep{ren2021rocketqav2} maupun berbasis model bahasa \citep{sun2023rankgpt}, dapat meningkatkan relevansi konteks secara signifikan.
+
+Meskipun \gls{lora} dan \gls{rag} dengan \gls{reranking} masing-masing telah banyak diteliti, kombinasi keduanya secara khusus untuk meningkatkan akurasi \gls{slm} lokal pada konteks \gls{ai} \textit{agent workflow automation} masih belum banyak dieksplorasi secara sistematis. Belum jelas seberapa besar kontribusi masing-masing komponen, bagaimana interaksi keduanya, serta konfigurasi \gls{reranking} mana yang memberikan keseimbangan terbaik antara akurasi dan efisiensi pada perangkat dengan sumber daya terbatas. Penelitian ini diajukan untuk menjawab kekosongan tersebut, yaitu merancang dan mengevaluasi \textit{pipeline} yang memadukan \gls{finetuning} \gls{lora} dan \gls{rag} dengan \gls{reranking} untuk mengoptimalkan akurasi \gls{slm} lokal pada tugas otomatisasi alur kerja berbasis agen.
+
+% TODO (Aditya): pertajam latar belakang dengan domain/kasus uji spesifik yang akan dipakai
+% (mis. otomatisasi tiket layanan, asisten basis pengetahuan internal, dsb.) bila sudah ditetapkan.
 
 \section{Rumusan Masalah}
-Inti permasalahan yang akan diselesaikan, bukan berisi solusi. 
+Berdasarkan latar belakang di atas, rumusan masalah penelitian ini adalah sebagai berikut:
+\begin{enumerate}
+    \item Seberapa besar peningkatan akurasi \gls{slm} lokal pada tugas \gls{ai} \textit{agent workflow automation} ketika diterapkan \gls{finetuning} \gls{lora} dibandingkan model dasar (\textit{baseline}) tanpa \gls{finetuning}?
+    \item Bagaimana pengaruh penerapan \gls{rag} dengan \gls{reranking} terhadap akurasi \gls{slm} lokal, dan bagaimana kinerja kombinasi \gls{lora} dengan \gls{rag} ber-\gls{reranking} dibandingkan penerapan masing-masing komponen secara terpisah?
+    \item Konfigurasi \gls{reranking} manakah yang memberikan keseimbangan terbaik antara akurasi dan efisiensi komputasi agar tetap layak dijalankan pada lingkungan lokal dengan sumber daya terbatas?
+\end{enumerate}
 
 \section{Batasan Masalah}
-Batasan masalah yang digunakan dalam penelitian ini adalah sebagai berikut: 
+Agar penelitian terarah, ditetapkan batasan sebagai berikut:
 \begin{enumerate}
-    \item Batasan pertama
-    \item Batasan kedua 
-    \item Batasan seterusnya 
-\end{enumerate}	
+    \item Model yang dioptimasi adalah \gls{slm} terbuka berukuran kecil yang dapat dijalankan secara lokal; model bahasa berukuran sangat besar dan layanan berbayar hanya digunakan sebagai pembanding bila diperlukan.
+    \item Teknik \gls{finetuning} yang dikaji difokuskan pada \gls{lora} dan variannya, bukan \gls{finetuning} penuh.
+    \item Peningkatan akurasi dievaluasi pada tugas otomatisasi alur kerja berbasis agen pada domain dan dataset yang ditetapkan dalam penelitian ini. % TODO: sebutkan dataset/domain final
+    \item Penelitian berfokus pada akurasi, kualitas \textit{retrieval}, dan efisiensi komputasi, serta tidak mencakup aspek antarmuka pengguna maupun penerapan produksi berskala penuh.
+\end{enumerate}
 
 \section{Tujuan Penelitian}
-Tujuan yang ingin dicapai pada penelitian ini.
+Tujuan yang ingin dicapai pada penelitian ini adalah:
+\begin{enumerate}
+    \item Mengukur dan menganalisis peningkatan akurasi \gls{slm} lokal akibat penerapan \gls{finetuning} \gls{lora} pada tugas otomatisasi alur kerja berbasis agen.
+    \item Menganalisis pengaruh \gls{rag} dengan \gls{reranking} serta kombinasinya dengan \gls{lora} terhadap akurasi melalui studi ablasi.
+    \item Menentukan konfigurasi \gls{reranking} yang memberikan keseimbangan optimal antara akurasi dan efisiensi komputasi untuk penerapan lokal.
+\end{enumerate}
 
 \section{Manfaat Penelitian}
-Penelitian ini diharapkan dapat memberi manfaat berupa: 
+Penelitian ini diharapkan memberi manfaat sebagai berikut:
 \begin{enumerate}
-    \item Manfaat pertama 
-    \item Manfaat kedua 
-    \item Manfaat ketiga 
+    \item \textbf{Manfaat teoretis:} memberikan bukti empiris mengenai kontribusi dan interaksi \gls{lora} serta \gls{rag} ber-\gls{reranking} dalam meningkatkan akurasi \gls{slm}, yang memperkaya khazanah penelitian \gls{nlp} hemat sumber daya.
+    \item \textbf{Manfaat praktis:} menghasilkan rancangan \textit{pipeline} \gls{slm} lokal yang lebih akurat dan efisien sehingga dapat menjadi acuan pengembangan \gls{ai} \textit{agent} yang menjaga privasi data dan menekan biaya operasional.
+    \item \textbf{Manfaat metodologis:} menyediakan prosedur evaluasi yang reprodusibel untuk membandingkan strategi optimasi \gls{slm} pada tugas otomatisasi alur kerja.
 \end{enumerate}

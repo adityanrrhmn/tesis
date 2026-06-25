@@ -1,34 +1,26 @@
-Bagian ini menjelaskan rencana jadwal yang dibuat secara cermat, dengan mempertimbangkan kelayakannya. Jadwal penelitian memuat hal sebagai berikut:
-
-\begin{enumerate}
-    \item Tahap-tahap penelitian yang akan dilakukan.
-    \item Rincian kegiatan dan target luaran untuk setiap tahap. Supaya cepat difahami, seyogyanya jadwal disajikan dalam bentuk matriks.
-    \item Waktu yang diperlukan untuk melaksanakan tiap-tiap tahap
-\end{enumerate}
-
-Contoh rincian kegiatan dan jadwal penelitian dapat dilihat pada Tabel \ref{tab:jadwal_penelitian}.
-
+Bagian ini menyajikan rencana jadwal penelitian beserta tahapan, target luaran, dan estimasi waktu pelaksanaan. Jadwal disusun dengan mempertimbangkan kelayakan dan dapat disesuaikan mengikuti arahan pembimbing. Rincian tahapan dan estimasi waktu ditunjukkan pada Tabel \ref{tab:jadwal_penelitian}.
 
 \begin{table}[!h]
     \centering
     \caption{Jadwal Kegiatan Penelitian}
     \label{tab:jadwal_penelitian}
     \resizebox{\linewidth}{!}{
-    \begin{tabular}{lp{4cm}lp{6cm}ll}
-    
+    \begin{tabular}{clp{5.5cm}ll}
     \toprule
-        No & Kegiatan & Target & Hasil yang Diharapkan & Awal & Akhir \\
+        No & Kegiatan & Target/Luaran & Mulai & Selesai \\
     \midrule
-        1 & Pengumpulan data & Data terkumpul & Data memenuhi syarat digunakan dalam penelitian & 29-09-2017 & 30-11-2017 \\
-        2 & Penyusunan Proposal & Ujian Proposal & Proposal siap untuk diuji & 05-01-2018 & 27-02-2018 \\
-        3 & Analisis Kebutuhan dan Perancangan & Rancangan sistem & Sesuai kebutuhan dan siap diimplementasikan & 19-03-2018 & 31-03-2018 \\
-        4 & Implementasi Sistem & Implementasi sistem & Sistem sudah sesuai dengan rencana penelitian & 02-04-2018 & 28-04-2018 \\
-        5 & Pengujian dan Perbaikan & Uji sistem & Sistem lulus uji dan sesuai analisis kebutuhan & 30-04-2018 & 18-05-2018 \\
-        6 & Penyusunan Laporan & Laporan tesis & Laporan akhir tesis disusun lengkap & 19-05-2018 & 08-06-2018 \\
+        1 & Studi literatur dan penyusunan proposal & Proposal siap diseminarkan & 02-06-2026 & 18-07-2026 \\
+        2 & Seminar proposal & Proposal disetujui & 21-07-2026 & 08-08-2026 \\
+        3 & Penyiapan data dan model dasar & Dataset terkurasi dan \textit{base} SLM siap & 11-08-2026 & 12-09-2026 \\
+        4 & Implementasi \textit{fine-tuning} LoRA & Model hasil adaptasi LoRA & 15-09-2026 & 17-10-2026 \\
+        5 & Implementasi RAG dan \textit{re-ranking} & \textit{Pipeline} RAG ber-\textit{re-ranking} & 20-10-2026 & 21-11-2026 \\
+        6 & Eksperimen dan studi ablasi & Hasil eksperimen seluruh konfigurasi & 24-11-2026 & 09-01-2027 \\
+        7 & Analisis hasil dan pembahasan & Temuan dan analisis & 12-01-2027 & 06-02-2027 \\
+        8 & Penyusunan tesis dan seminar hasil & Draf tesis dan seminar hasil & 09-02-2027 & 20-03-2027 \\
+        9 & Revisi dan sidang tesis & Tesis final dan kelulusan & 23-03-2027 & 24-04-2027 \\
     \bottomrule
     \end{tabular}
     }
 \end{table}
 
-
-
+% TODO (Aditya): sesuaikan tanggal mengikuti kalender akademik dan arahan pembimbing.

@@ -1,3 +1,10 @@
 [
-  "obsidian-local-rest-api"
+  "obsidian-local-rest-api",
+  "obsidian-citation-plugin",
+  "dataview",
+  "obsidian-annotator",
+  "obsidian-excalidraw-plugin",
+  "obsidian-kanban",
+  "obsidian-mind-map",
+  "obsidian-zotero-desktop-connector"
 ]

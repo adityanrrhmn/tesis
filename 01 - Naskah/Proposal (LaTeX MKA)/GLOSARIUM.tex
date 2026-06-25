@@ -1,22 +1,28 @@
 % === ISTILAH ===
 
-\newglossaryentry{lowresource}{
-    name={\textit{Low-resource}},
-    description={Merujuk pada bahasa atau domain yang memiliki sedikit data pelatihan yang tersedia}
+\newglossaryentry{finetuning}{
+    name={\textit{fine-tuning}},
+    description={Proses penyesuaian lanjutan model terlatih (\textit{pre-trained}) pada data tugas atau domain tertentu agar berkinerja lebih baik pada tugas tersebut}
 }
 
-\newglossaryentry{highresource}{
-    name={\textit{High-resource}},
-    description={Merujuk pada bahasa atau domain dengan ketersediaan data pelatihan yang melimpah}
+\newglossaryentry{reranking}{
+    name={\textit{re-ranking}},
+    description={Tahap penyusunan ulang peringkat dokumen/pasase hasil pencarian tahap awal agar dokumen yang paling relevan menempati posisi teratas sebelum diberikan ke model generatif}
+}
+
+\newglossaryentry{workflow}{
+    name={\textit{workflow automation}},
+    description={Otomatisasi rangkaian tugas atau proses kerja yang sebelumnya dilakukan manual, pada konteks ini dijalankan oleh agen berbasis model bahasa}
 }
 
 % === SINGKATAN ===
 
-\newacronym{nmt}{NMT}{\textit{Neural Machine Translation}}
-\newacronym{ann}{ANN}{\textit{Artificial Neural Network}}
+\newacronym{ai}{AI}{\textit{Artificial Intelligence}}
 \newacronym{nlp}{NLP}{\textit{Natural Language Processing}}
-
-
-
-
-
+\newacronym{llm}{LLM}{\textit{Large Language Model}}
+\newacronym{slm}{SLM}{\textit{Small Language Model}}
+\newacronym{lora}{LoRA}{\textit{Low-Rank Adaptation}}
+\newacronym{peft}{PEFT}{\textit{Parameter-Efficient Fine-Tuning}}
+\newacronym{rag}{RAG}{\textit{Retrieval-Augmented Generation}}
+\newacronym{api}{API}{\textit{Application Programming Interface}}
+\newacronym{gpu}{GPU}{\textit{Graphics Processing Unit}}

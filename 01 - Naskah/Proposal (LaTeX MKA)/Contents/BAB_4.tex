@@ -1,36 +1,54 @@
-Silahkan disesuaikan dengan kebutuhan dan kasusnya masing-masing. Contoh yang bisa diikuti adalah sebagai berikut: 
+Bab ini menjelaskan metodologi penelitian, mencakup deskripsi umum, akuisisi data, rancangan model yang diusulkan, serta rancangan pengujian. Penelitian ini bersifat eksperimental kuantitatif dengan pendekatan pengembangan dan evaluasi sistem.
 
 \section{Deskripsi Umum Penelitian}
-Pada bagian ini, penelitian dijelaskan secara singkat dan jelas. Fokus penelitian ini adalah [jelaskan fokus utama penelitian, misalnya pengembangan model kecerdasan buatan untuk klasifikasi teks, pengenalan gambar, atau prediksi.
+Penelitian ini bertujuan mengoptimalkan akurasi \gls{slm} lokal untuk \gls{ai} \textit{agent workflow automation} melalui kombinasi \gls{finetuning} \gls{lora} dan \gls{rag} ber-\gls{reranking}. Alur penelitian terdiri atas lima tahap: (1) penyiapan data dan model dasar; (2) penerapan \gls{finetuning} \gls{lora}; (3) pembangunan \textit{pipeline} \gls{rag} dengan \gls{reranking}; (4) integrasi dan eksperimen ablasi; serta (5) evaluasi dan analisis. Variabel bebas penelitian adalah strategi optimasi (\gls{lora}, \gls{rag}, \gls{reranking}, dan kombinasinya), sedangkan variabel terikat adalah akurasi tugas, kualitas \textit{retrieval}, dan efisiensi komputasi.
 
 \section{Akuisisi Data}
+Data yang digunakan meliputi tiga komponen:
+\begin{enumerate}
+    \item \textbf{Model dasar (\textit{base} \gls{slm}):} \gls{slm} terbuka yang dapat dijalankan lokal, dengan kandidat antara lain Phi-3-mini \citep{abdin2024phi3}, Qwen2.5 berukuran kecil \citep{qwen2024qwen25}, atau TinyLlama \citep{zhang2024tinyllama}. % TODO (Aditya): tetapkan model final beserta alasannya.
+    \item \textbf{Data \gls{finetuning}:} kumpulan data instruksi untuk tugas otomatisasi alur kerja agen (mis. pemanggilan \textit{tool}, penalaran prosedural, dan menjawab berbasis domain). % TODO: tetapkan sumber/format dataset dan jumlah sampel.
+    \item \textbf{Basis pengetahuan \gls{rag}:} korpus dokumen domain yang diindeks sebagai basis \textit{retrieval}. % TODO: tetapkan korpus domain.
+\end{enumerate}
+Data dibagi menjadi himpunan latih, validasi, dan uji dengan proporsi yang ditetapkan secara konsisten, dan seluruh praproses (pembersihan, tokenisasi, penyusunan \textit{prompt}) didokumentasikan agar reprodusibel.
 
 \section{Rancangan Model}
-Contoh pseudocode atau algoritma ditunjukkan pada \textit{pseudocode} \ref{alg:semantic_instruction}.
+Sistem yang diusulkan terdiri atas dua jalur optimasi yang saling melengkapi. Pertama, model dasar diadaptasi ke domain melalui \gls{finetuning} \gls{lora} \citep{hu2022lora}, bila perlu dengan kuantisasi mengikuti skema QLoRA untuk menghemat memori \citep{dettmers2023qlora}; implementasi pelatihan memanfaatkan perkakas \gls{finetuning} yang telah mapan \citep{zheng2024llamafactory}. Kedua, pada tahap inferensi, model di-augmentasi dengan \gls{rag} \citep{lewis2020rag, gao2023ragsurvey} yang dilengkapi tahap \gls{reranking} untuk memastikan konteks paling relevan diberikan kepada model, mengingat keterbatasan pemanfaatan konteks panjang pada model kecil \citep{liu2024lostmiddle}. Mekanisme \gls{reranking} yang dibandingkan mencakup pendekatan \textit{re-ranker} terlatih \citep{ren2021rocketqav2} dan pendekatan berbasis model bahasa \textit{listwise} \citep{sun2023rankgpt}. Garis besar alur inferensi diuraikan pada \textit{pseudocode} \ref{alg:pipeline}.
 
 \begin{algorithm}[H]
-\caption{Generate Semantic-Based Instructions}
-\label{alg:semantic_instruction}
+\caption{Alur Inferensi SLM dengan LoRA dan Re-ranked RAG}
+\label{alg:pipeline}
 \begin{algorithmic}[1]
-\Procedure{GenerateInstructions}{KeyID}
-    \State word $\gets$ GetSpecialWord(KeyID)
-    \State mapped $\gets$ FindParallelWord(word) \textbf{or} word
-    \State embedding $\gets$ GenerateEmbedding(mapped)
-    \State nearest $\gets$ FindNearestWords(embedding, n)
-    \State instructions $\gets$ [ ]
-    \ForAll{w \textbf{in} nearest}
-        \State alt $\gets$ FindParallelWord(w) \textbf{or} w
-        \State instructions.append(alt)
-    \EndFor
-    \State \Return CombineIntoInstruction(instructions)
+\Procedure{JawabAgen}{kueri $q$, basis pengetahuan $\mathcal{D}$, model $M_{\text{LoRA}}$}
+    \State $C \gets \text{Retrieve}(q, \mathcal{D}, k)$ \Comment{ambil $k$ dokumen kandidat}
+    \State $C' \gets \text{ReRank}(q, C, k')$ \Comment{susun ulang, ambil $k' \le k$ teratas}
+    \State $p \gets \text{SusunPrompt}(q, C')$ \Comment{gabungkan konteks terpilih}
+    \State $a \gets M_{\text{LoRA}}(p)$ \Comment{hasilkan jawaban/tindakan agen}
+    \State \Return $a$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
-
-
+Konfigurasi yang dieksplorasi mencakup peringkat \gls{lora} ($r$), faktor penskalaan, dan modul sasaran; jumlah dokumen yang diambil ($k$) dan disisakan setelah \gls{reranking} ($k'$); serta jenis \textit{re-ranker}. % TODO: tetapkan rentang nilai hyperparameter final.
 
 \section{Rancangan Pengujian}
-Pengujian model dilakukan dengan menggunakan [jelaskan metode pengujian, misalnya train-test split 80-20, k-fold cross-validation]. Metrik evaluasi yang digunakan meliputi [sebutkan metrik yang relevan, misalnya accuracy, precision, recall, F1-score untuk klasifikasi, atau MSE untuk regresi].
+Untuk menjawab rumusan masalah, dilakukan studi ablasi yang membandingkan beberapa konfigurasi: (K1) model dasar tanpa intervensi sebagai \textit{baseline}; (K2) model dasar + \gls{lora}; (K3) model dasar + \gls{rag} tanpa \gls{reranking}; (K4) model dasar + \gls{rag} + \gls{reranking}; dan (K5) model dasar + \gls{lora} + \gls{rag} + \gls{reranking}. Perbandingan antar-konfigurasi memungkinkan pengukuran kontribusi tiap komponen dan interaksinya.
 
+Metrik evaluasi yang digunakan dikelompokkan menjadi tiga, sebagaimana Tabel \ref{tab:metrik}.
 
+\begin{table}[!h]
+    \centering
+    \caption{Metrik Evaluasi}
+    \label{tab:metrik}
+    \begin{tabular}{p{0.26\linewidth} p{0.62\linewidth}}
+        \toprule
+        \textbf{Aspek} & \textbf{Metrik} \\
+        \midrule
+        Akurasi tugas & \textit{Exact Match}, F1, dan/atau akurasi pemanggilan \textit{tool} sesuai tugas agen \\
+        Kualitas \textit{retrieval}/jawaban & nDCG/\textit{recall} untuk \textit{retrieval}; metrik berbasis \gls{rag} seperti \textit{faithfulness} dan \textit{answer relevance} \citep{es2024ragas, chen2024ragbench} \\
+        Efisiensi & Latensi inferensi, penggunaan memori \gls{gpu}, dan jumlah parameter terlatih \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Eksperimen dijalankan pada lingkungan perangkat keras yang ditetapkan, dengan \textit{seed} acak yang dikunci, konfigurasi yang disimpan sebagai berkas, dan kode yang ditandai versinya untuk menjamin reprodusibilitas. % TODO: cantumkan spesifikasi perangkat keras (GPU) yang dipakai.

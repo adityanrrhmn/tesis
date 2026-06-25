@@ -1,38 +1,77 @@
-Tinjauan pustaka memuat uraian sistematis tentang informasi hasil penelitian yang disajikan dalam pustaka dan menghubungkannya dengan masalah penelitian yang sedang diteliti. Fakta-fakta yang dikemukakan sejauh mungkin diacu dari sumber aslinya, dengan mengikuti cara sitasi nama-tahun dalam kurung biasa. Sitasi tidak dari sumber asli hanya boleh dilakukan dalam keadaan terpaksa yaitu ketika sumber aslinya sangat sulit ditemukan.
+Bab ini menyajikan tinjauan sistematis atas penelitian terdahulu yang relevan dengan optimasi akurasi \gls{slm}, dikelompokkan menurut tema utama, lalu diakhiri dengan posisi penelitian ini terhadap karya-karya tersebut. Sitasi menggunakan format nama--tahun.
 
-Gunakan ini untuk sitasi \citet{aji-etal-2022-one} atau \citep{aji-etal-2022-one}. Contoh rangkuman tabel tinjauan pustaka ditunjukkan pada Tabel \ref{tab:tinjauan-pustaka}.
+\section{Small Language Model}
+Tren penelitian model bahasa bergeser dari sekadar memperbesar ukuran menuju efisiensi, melahirkan kelas \gls{slm} yang menyeimbangkan kemampuan dan biaya komputasi \citep{wang2025slmsurvey}. \citet{abdin2024phi3} menunjukkan bahwa model 3,8 miliar parameter (Phi-3-mini) yang dilatih dengan kurasi data berkualitas dapat menyaingi model yang jauh lebih besar dan tetap mampu berjalan di perangkat ponsel. Pendekatan lain mencapai efisiensi melalui pra-pelatihan ringkas seperti TinyLlama \citep{zhang2024tinyllama}, penyediaan beragam ukuran model terbuka seperti Qwen2.5 \citep{qwen2024qwen25}, maupun pemangkasan terstruktur dari model besar seperti Sheared-LLaMA \citep{xia2023sheared}. Karya-karya ini menegaskan kelayakan \gls{slm} untuk penerapan lokal, sekaligus menyoroti bahwa kesenjangan akurasi terhadap model besar masih menjadi tantangan terbuka.
 
-\begin{longtable}{p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth}}
-    \caption{Tinjauan Pustaka}
+\section{Parameter-Efficient Fine-Tuning dan LoRA}
+\citet{ding2023delta} memberikan tinjauan menyeluruh atas \gls{peft} dan menunjukkan bahwa pengoptimalan sebagian kecil parameter dapat mendekati kinerja \gls{finetuning} penuh. Metode \gls{lora} \citep{hu2022lora} menjadi tonggak penting dengan menyuntikkan matriks dekomposisi berperingkat rendah pada arsitektur \textit{transformer}. Pengembangan lanjutan mencakup QLoRA yang menggabungkan kuantisasi 4-bit untuk efisiensi memori \citep{dettmers2023qlora}, DyLoRA yang menghindari pencarian peringkat secara manual \citep{valipour2023dylora}, serta kerangka adapter terpadu untuk \gls{slm} \citep{hu2023llmadapters}. Ketersediaan perkakas seperti LlamaFactory \citep{zheng2024llamafactory} mempermudah penerapan teknik-teknik tersebut secara praktis. Tinjauan khusus oleh \citet{mao2024lorasurvey} memetakan berbagai varian \gls{lora} beserta arah pengembangannya.
+
+\section{Retrieval-Augmented Generation}
+\citet{lewis2020rag} memperkenalkan \gls{rag} yang memadukan memori parametrik dan non-parametrik untuk tugas padat pengetahuan. Tinjauan oleh \citet{gao2023ragsurvey} mengklasifikasikan perkembangan \gls{rag} dari \textit{naive}, \textit{advanced}, hingga \textit{modular}. \citet{ram2023incontext} menunjukkan bahwa pendekatan In-Context RALM mampu meningkatkan kinerja model bahasa tanpa mengubah arsitekturnya, sementara \citet{jiang2023activerag} mengusulkan pengambilan dokumen secara aktif selama proses generasi. Untuk pengukuran, \citet{chen2024ragbench} dan \citet{es2024ragas} menyediakan tolok ukur serta metrik evaluasi otomatis bagi sistem \gls{rag}.
+
+\section{Re-ranking pada Sistem Retrieval}
+Kualitas konteks yang diberikan kepada model generatif sangat menentukan akurasi keluaran. \citet{liu2024lostmiddle} membuktikan bahwa model bahasa kurang efektif memanfaatkan informasi yang terletak di tengah konteks panjang, sehingga urutan dokumen menjadi krusial. \citet{ren2021rocketqav2} mengusulkan pelatihan gabungan \textit{retriever} dan \textit{re-ranker} secara terpadu. Perkembangan terbaru memanfaatkan model bahasa sebagai \textit{re-ranker}: \citet{sun2023rankgpt} menunjukkan bahwa model bahasa dapat menjadi agen pemeringkat yang kompetitif dan kemampuannya dapat didistilasi ke model kecil, sedangkan \citet{ma2023lrl}, \citet{pradeep2023rankvicuna}, dan \citet{pradeep2023rankzephyr} mengembangkan \textit{re-ranker} \textit{listwise} berbasis model terbuka.
+
+\section{AI Agent dan Workflow Automation}
+\citet{wang2024agentsurvey} menyusun tinjauan komprehensif arsitektur agen otonom berbasis model bahasa. Kemampuan inti agen mencakup penggunaan \textit{tool} eksternal \citep{schick2023toolformer}, penalaran bertahap yang lebih terstruktur \citep{yao2023tot}, serta perencanaan dan memori sebagaimana ditunjukkan pada agen generatif \citep{park2023generativeagents}. Karya-karya ini menjadi landasan bagi penerapan model bahasa pada otomatisasi alur kerja.
+
+\section{Posisi Penelitian}
+Tinjauan di atas menunjukkan bahwa \gls{lora}, \gls{rag}, dan \gls{reranking} masing-masing efektif meningkatkan kinerja model bahasa, namun umumnya diteliti secara terpisah dan kerap pada model berukuran besar. Belum banyak penelitian yang secara sistematis memadukan \gls{finetuning} \gls{lora} dengan \gls{rag} ber-\gls{reranking} khusus untuk meningkatkan akurasi \gls{slm} lokal pada konteks \gls{ai} \textit{agent workflow automation}, sekaligus menganalisis kontribusi tiap komponen dan keseimbangannya dengan efisiensi komputasi. Kekosongan inilah yang menjadi fokus penelitian ini. Ringkasan sebagian penelitian terdahulu yang menjadi acuan utama disajikan pada Tabel \ref{tab:tinjauan-pustaka}.
+
+\begin{longtable}{p{0.16\linewidth} p{0.24\linewidth} p{0.26\linewidth} p{0.24\linewidth}}
+    \caption{Ringkasan Penelitian Terdahulu yang Menjadi Acuan Utama}
     \label{tab:tinjauan-pustaka} \\
     \hline
-    \textbf{Nama} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil} \\
+    \textbf{Penelitian} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil Utama} \\
     \hline
     \endfirsthead
 
     \hline
-    \textbf{Nama} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil} \\
+    \textbf{Penelitian} & \textbf{Tujuan} & \textbf{Metode} & \textbf{Hasil Utama} \\
     \hline
     \endhead
 
     \hline
-    \multicolumn{4}{r}{Lanjutan di halaman berikutnya...} \\
+    \multicolumn{4}{r}{\textit{Lanjutan di halaman berikutnya...}} \\
     \endfoot
 
     \hline
     \endlastfoot
 
-    \citet{iyer-etal-2024-exploring} &  
-    Mengeksplorasi penggunaan data monolingual untuk model multilingual.  &  
-    Model Llama-2, MaLA-500, Mistral 7B dengan pendekatan LoRA.& 
-    \textit{Pretraining} dengan data monolingual meningkatkan performa penerjemahan. \\
-    \hline 
-    
-    \citet{cahyawijaya-etal-2023-instructalign} &  
-    Melakukan pelatihan model menggunakan Cross-lingual Instruction Tuning berbasis \textit{Alignment}.  &  
-    Model BLOOMZ dengan instruksi TLM dan XSS. & 
-    \textit{Alignment} meningkatkan pemahaman bahasa \textit{Low-resource}. \\
+    \citet{hu2022lora} &
+    Adaptasi LLM secara hemat parameter &
+    Menyuntikkan matriks berperingkat rendah, bobot dasar dibekukan &
+    Parameter terlatih turun drastis, setara/lebih baik dari \textit{fine-tuning} penuh tanpa latensi tambahan \\
     \hline
-    % Tambahkan lebih banyak baris jika perlu
+
+    \citet{dettmers2023qlora} &
+    \textit{Fine-tuning} hemat memori &
+    Kuantisasi 4-bit (NF4) dipadu LoRA dan \textit{paged optimizer} &
+    Mampu melatih model besar pada satu GPU dengan kualitas mendekati 16-bit \\
+    \hline
+
+    \citet{lewis2020rag} &
+    Tugas NLP padat pengetahuan &
+    Gabungan model seq2seq pra-latih dengan \textit{retriever} \textit{dense} &
+    Capaian SOTA pada beberapa tugas QA domain terbuka, keluaran lebih faktual \\
+    \hline
+
+    \citet{ram2023incontext} &
+    Meningkatkan LM tanpa ubah arsitektur &
+    In-Context RALM dengan spesialisasi mekanisme \textit{ranking} &
+    Peningkatan kinerja konsisten lintas ukuran model \\
+    \hline
+
+    \citet{sun2023rankgpt} &
+    \textit{Re-ranking} relevansi dokumen &
+    Model bahasa sebagai agen pemeringkat \textit{listwise} dan distilasi permutasi &
+    Kompetitif/melebihi metode \textit{supervised}; model distilasi kecil mengungguli model \textit{supervised} lebih besar \\
+    \hline
+
+    \citet{abdin2024phi3} &
+    SLM berkemampuan tinggi di perangkat lokal &
+    Model 3,8 M parameter dengan kurasi data berkualitas &
+    Setara model jauh lebih besar pada sejumlah tolok ukur, dapat berjalan di ponsel \\
+    \hline
 
 \end{longtable}

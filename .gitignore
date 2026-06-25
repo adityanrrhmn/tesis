@@ -76,6 +76,8 @@ mlruns/
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/cache
+# plugin: binari besar + data.json plugin Local REST API memuat API key -> JANGAN di-git
+.obsidian/plugins/
 .trash/
 
 # ===== OS =====

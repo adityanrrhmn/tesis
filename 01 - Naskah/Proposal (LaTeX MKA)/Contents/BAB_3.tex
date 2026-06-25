@@ -1,34 +1,33 @@
-\section{Teori pertama}
+Bab ini menguraikan landasan teori yang menjadi dasar penelitian, meliputi arsitektur model bahasa, \gls{slm}, \gls{peft} dengan \gls{lora}, \gls{rag}, mekanisme \gls{reranking}, serta konsep \gls{ai} \textit{agent}.
 
-\section{Teori kedua}
-Contoh persamaan dapat dilihat di Persamaan \ref{eq:attention}
+\section{Model Bahasa dan Arsitektur \textit{Transformer}}
+Model bahasa modern dibangun di atas arsitektur \textit{transformer} yang mengandalkan mekanisme \textit{self-attention} untuk menangkap keterkaitan antar-token dalam suatu urutan \citep{minaee2024llmsurvey}. Inti dari mekanisme tersebut adalah operasi \textit{attention} yang dirumuskan pada Persamaan \ref{eq:attention}, dengan $Q$, $K$, dan $V$ berturut-turut adalah matriks \textit{query}, \textit{key}, dan \textit{value}, serta $d_k$ adalah dimensi \textit{key}.
 
 \begin{equation}
-    \text{Attention}(Q, K, V) = \left( \frac{QK^T}{\sqrt{d_k}} \right) V
+    \text{Attention}(Q, K, V) = \text{softmax}\left( \frac{QK^\top}{\sqrt{d_k}} \right) V
     \label{eq:attention}
 \end{equation}
 
-\section{Teori ketiga}
-\subsection{Subteori ketiga}
-Contoh Tabel \ref{tab:skala-evaluasi}.
+Model bahasa berskala besar dilatih pada korpus teks masif sehingga mampu menyimpan pengetahuan dalam parameternya dan menunjukkan kemampuan generalisasi yang kuat \citep{minaee2024llmsurvey}.
 
-\begin{table}[!h]
-    \centering
-    \caption{Skala Evaluasi \textit{Adequacy} dan \textit{Fluency}}
-    \begin{tabular}{ccc}
-        \toprule
-        \textbf{No} & \textbf{Adequacy} & \textbf{Fluency} \\
-        \midrule
-        4 & Semua makna & Sangat fasih \\
-        3 & Sebagian makna & Fasih \\
-        2 & Banyak makna & Cukup fasih \\
-        1 & Sedikit makna & Tidak fasih \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:skala-evaluasi}
-\end{table}
+\section{Small Language Model}
+\gls{slm} adalah model bahasa dengan jumlah parameter relatif kecil (umumnya pada kisaran ratusan juta hingga beberapa miliar) sehingga dapat dijalankan pada perangkat keras terbatas atau secara lokal \citep{wang2025slmsurvey}. Efisiensi \gls{slm} dicapai melalui kombinasi arsitektur yang ringkas, kurasi data pra-pelatihan yang berkualitas, serta teknik kompresi. Keunggulan utama \gls{slm} adalah biaya inferensi yang rendah, latensi yang kecil, dan kemampuan berjalan tanpa ketergantungan pada layanan awan, dengan konsekuensi kapasitas penalaran yang lebih terbatas dibanding model besar \citep{wang2025slmsurvey}.
 
-\subsection{Subteori ketiga lagi} \subsubsection{Subsubteori ketiga} Ini adalah contoh subsubteori ketiga 
-\subsubsection{Subsubteori ketiga lagi} Ini adalah contoh subsubteori ketiga lagi
+\section{Parameter-Efficient Fine-Tuning dan LoRA}
+\gls{peft} adalah keluarga teknik yang mengadaptasi model terlatih dengan hanya memperbarui sebagian kecil parameter, sementara sebagian besar bobot dibekukan \citep{ding2023delta}. \gls{lora} \citep{hu2022lora} merupakan salah satu metode \gls{peft} paling banyak digunakan. Diberikan bobot terlatih $W_0 \in \mathbb{R}^{d \times k}$, \gls{lora} memodelkan pembaruan bobot $\Delta W$ sebagai hasil perkalian dua matriks berperingkat rendah, sebagaimana Persamaan \ref{eq:lora}, dengan $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times k}$, dan peringkat $r \ll \min(d,k)$.
 
+\begin{equation}
+    h = W_0 x + \Delta W x = W_0 x + B A x
+    \label{eq:lora}
+\end{equation}
 
+Karena hanya $A$ dan $B$ yang dilatih, jumlah parameter yang diperbarui jauh lebih kecil daripada \textit{fine-tuning} penuh, tanpa menambah latensi inferensi karena $B A$ dapat digabungkan kembali ke $W_0$ saat penerapan \citep{hu2022lora}. Varian QLoRA menambahkan kuantisasi 4-bit pada bobot dasar untuk menekan kebutuhan memori \citep{dettmers2023qlora}.
+
+\section{Retrieval-Augmented Generation}
+\gls{rag} memadukan kemampuan generatif model bahasa (memori parametrik) dengan basis pengetahuan eksternal yang dapat diambil saat inferensi (memori non-parametrik) \citep{lewis2020rag}. Secara umum, alur \gls{rag} terdiri atas tiga tahap: (1) \textit{retrieval}, yaitu pengambilan dokumen relevan dari basis pengetahuan menggunakan representasi vektor; (2) \textit{augmentation}, yaitu penggabungan dokumen terambil ke dalam \textit{prompt}; dan (3) \textit{generation}, yaitu penghasilan jawaban oleh model bahasa berdasarkan konteks tersebut \citep{gao2023ragsurvey}. Pendekatan ini memungkinkan pembaruan pengetahuan tanpa pelatihan ulang dan mengurangi halusinasi.
+
+\section{Re-ranking}
+\gls{reranking} adalah tahap menyusun ulang peringkat dokumen hasil \textit{retrieval} awal agar dokumen paling relevan menempati posisi teratas sebelum diberikan ke model generatif. Tahap ini penting karena model bahasa, khususnya yang berukuran kecil dengan konteks terbatas, terbukti tidak robust memanfaatkan informasi yang terletak di tengah konteks panjang \citep{liu2024lostmiddle}. \gls{reranking} dapat dilakukan dengan model terlatih khusus \citep{ren2021rocketqav2} maupun dengan memanfaatkan model bahasa sebagai pemeringkat \textit{listwise} \citep{sun2023rankgpt}.
+
+\section{AI Agent}
+\gls{ai} \textit{agent} berbasis model bahasa adalah sistem yang menggunakan model bahasa sebagai \textit{controller} untuk menalar, merencanakan, dan berinteraksi dengan lingkungan melalui \textit{tool} eksternal guna menyelesaikan tugas \citep{wang2024agentsurvey}. Komponen pentingnya mencakup kemampuan pemanggilan \textit{tool}/\gls{api} \citep{schick2023toolformer} dan penalaran bertahap \citep{yao2023tot}. Dalam konteks \gls{workflow}, agen memetakan instruksi pengguna menjadi rangkaian tindakan terotomasi, sehingga akurasi model dalam memahami instruksi dan memilih tindakan yang tepat menjadi faktor kritis.
