@@ -1,6 +1,6 @@
 # 🔌 Setup MCP — Status & Langkah
 
-Workspace ini memakai 6 server MCP **gratis** (konfigurasi di `.mcp.json`). Berikut status & yang masih perlu Anda lakukan.
+Workspace ini memakai 8 server MCP **gratis** (konfigurasi di `.mcp.json`). Berikut status & yang masih perlu Anda lakukan.
 
 > [!important] Aktifkan di Claude Code
 > Setelah `.mcp.json` ada, **restart Claude Code** (atau jalankan `/mcp`) dan **setujui (trust)** server MCP proyek saat diminta. Server berbasis `uvx`/`npx` akan mengunduh paket saat pertama dijalankan (10–60 detik), lalu di-cache.
@@ -12,16 +12,18 @@ Workspace ini memakai 6 server MCP **gratis** (konfigurasi di `.mcp.json`). Beri
 | **obsidian** | Baca/tulis vault | 🟢 **Siap** | Plugin Local REST API aktif, API key sudah terpasang, endpoint HTTPS:27129 teruji (200) |
 | **zotero** | Sitasi & referensi | 🟡 **Perlu Zotero** | Install Zotero 7 + aktifkan local API (lihat di bawah) |
 | **arxiv** | Cari/unduh paper arXiv | 🟢 Siap | PDF tersimpan ke `02 - Literatur/PDF`. Unduh paket saat pertama dipakai |
-| **paper-search** | Cari literatur multi-sumber | 🟢 Siap | Butuh `git` (ada). Unduh ~86 dependensi saat pertama dipakai |
+| **paper-search** | Cari literatur multi-sumber | 🟢 Siap | Butuh `git` (ada). Opsional: API key Semantic Scholar (sudah diajukan 2026-07, menunggu email) untuk rate limit lebih tinggi |
 | **fetch** | Web → markdown | 🟢 Siap | — |
 | **sequential-thinking** | Penalaran bertahap | 🟢 Siap | — |
+| **huggingface** | Cari model/dataset/paper HF Hub | 🟢 Siap | Token read terpasang di `.mcp.json` |
+| **context7** | Dokumentasi API library terkini | 🟢 Siap | API key terpasang di `.mcp.json` |
 
 ## 1. Obsidian — SELESAI ✅
 - Plugin **Local REST API** sudah terpasang & aktif di vault ini.
 - API key sudah otomatis dimasukkan ke `.mcp.json` (dibaca dari config plugin).
-- Endpoint **HTTPS `127.0.0.1:27129`** sudah diuji dan merespons `200`.
+- Endpoint aktif di mesin ini: **HTTP `127.0.0.1:27128`** (teruji auth OK). `OBSIDIAN_API_KEY` diisi key **polos tanpa awalan `Bearer`** — client `mcp-obsidian` menambahkannya otomatis (kalau ditulis "Bearer <key>" hasilnya 401).
 - **Syarat pakai:** Obsidian harus **terbuka** dengan vault ini saat MCP dipakai.
-- *Fallback:* jika HTTPS bermasalah, ganti di `.mcp.json` menjadi `"OBSIDIAN_PROTOCOL":"http"` dan `"OBSIDIAN_PORT":"27128"` (server HTTP juga aktif & teruji).
+- *Alternatif HTTPS:* aktifkan server HTTPS di setelan plugin, lalu set `"OBSIDIAN_PROTOCOL":"https"` + port-nya (mis. `27129`).
 
 ## 2. Zotero — PERLU DIPASANG 🟡
 Server `zotero` memakai paket **`zotero-mcp-server`** (oleh 54yyyu — punya pencarian semantik; **bukan** `zotero-mcp` biasa). Mode **lokal gratis** (tanpa akun/API key):
@@ -33,6 +35,12 @@ Server `zotero` memakai paket **`zotero-mcp-server`** (oleh 54yyyu — punya pen
 
 ## 3–6. arXiv / Paper Search / Fetch / Sequential Thinking — Siap
 Tidak perlu kredensial. Akan aktif otomatis setelah Claude Code restart. arXiv menyimpan PDF ke `02 - Literatur/PDF`.
+
+## 7. Hugging Face — SELESAI ✅
+Server MCP resmi HF (remote `https://huggingface.co/mcp`): cari model, dataset, paper, dan dokumentasi Hub — inti untuk topik SLM lokal + LoRA. Autentikasi via token **read** (gratis) di `.mcp.json`. Kelola token: <https://huggingface.co/settings/tokens>.
+
+## 8. Context7 — SELESAI ✅
+Dokumentasi API library terkini (transformers, peft, trl, dsb.) agar kode eksperimen tidak memakai API usang. Remote `https://mcp.context7.com/mcp`; API key gratis dari <https://context7.com/dashboard>, tersimpan di `.mcp.json`.
 
 ## Uji cepat setelah aktif
 Minta saya (atau coba sendiri):

@@ -82,11 +82,15 @@ _docx_src.tex
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/cache
-# plugin: binari besar + data.json plugin Local REST API memuat API key -> JANGAN di-git
-.obsidian/plugins/
+# Plugin community DI-TRACK di git agar otomatis terpasang & aktif di device lain.
+# TAPI data.json Local REST API memuat API key + sertifikat (repo PUBLIK!) -> JANGAN di-git
+.obsidian/plugins/obsidian-local-rest-api/data.json
 .trash/
 
 # ===== OS =====
 .DS_Store
 Thumbs.db
 desktop.ini
+# lock file MS Office (dokumen sedang terbuka)
+~$*
+**/~$*

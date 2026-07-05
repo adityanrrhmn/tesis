@@ -1,14 +1,14 @@
 {
-  "_comment": "TEMPLATE — salin ke .mcp.json lalu isi OBSIDIAN_API_KEY. File .mcp.json asli (berisi kunci) diabaikan git. Lihat 'SETUP MCP.md'.",
+  "_comment": "TEMPLATE — salin ke .mcp.json lalu isi placeholder <...>. File .mcp.json asli (berisi kunci) diabaikan git; repo PUBLIK, jangan pernah commit kunci. Obsidian: isi key POLOS tanpa awalan 'Bearer' (client menambahkannya sendiri); samakan port/protokol dengan setelan plugin Local REST API (default vault ini: HTTP 27128). Sesuaikan path arxiv dengan lokasi clone di device Anda. Lihat 'SETUP MCP.md'.",
   "mcpServers": {
     "obsidian": {
       "command": "uvx",
       "args": ["mcp-obsidian"],
       "env": {
-        "OBSIDIAN_API_KEY": "<TEMPEL_API_KEY_DARI_PLUGIN_LOCAL_REST_API>",
+        "OBSIDIAN_API_KEY": "<API_KEY_DARI_PLUGIN_LOCAL_REST_API_TANPA_KATA_BEARER>",
         "OBSIDIAN_HOST": "127.0.0.1",
-        "OBSIDIAN_PORT": "27129",
-        "OBSIDIAN_PROTOCOL": "https"
+        "OBSIDIAN_PORT": "27128",
+        "OBSIDIAN_PROTOCOL": "http"
       }
     },
     "zotero": {
@@ -18,7 +18,7 @@
     },
     "arxiv": {
       "command": "uvx",
-      "args": ["arxiv-mcp-server[pdf]", "--storage-path", "D:\\00 - Tesis\\02 - Literatur\\PDF"]
+      "args": ["arxiv-mcp-server[pdf]", "--storage-path", "C:\\DATA\\Thesis\\02 - Literatur\\PDF"]
     },
     "paper-search": {
       "command": "uvx",
@@ -33,6 +33,16 @@
     "sequential-thinking": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "huggingface": {
+      "type": "http",
+      "url": "https://huggingface.co/mcp",
+      "headers": { "Authorization": "Bearer <HF_TOKEN_READ_DARI_huggingface.co/settings/tokens>" }
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": { "CONTEXT7_API_KEY": "<API_KEY_DARI_context7.com/dashboard>" }
     }
   }
 }

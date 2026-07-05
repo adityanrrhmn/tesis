@@ -35,6 +35,16 @@ Konvensi LaTeX template: sitasi `\citep{kunci}`; glosarium/akronim `\gls{kunci}`
 - **paper-search** — cari literatur multi-sumber (Semantic Scholar, PubMed, dll). 🟢
 - **fetch** — ambil halaman web → markdown. 🟢
 - **sequential-thinking** — penalaran bertahap untuk metodologi/pembuktian. 🟢
+- **huggingface** — cari model/dataset/paper/dokumentasi HF Hub (token read di `.mcp.json`). 🟢
+- **context7** — dokumentasi API library terkini (transformers, peft, dsb.) untuk kode eksperimen. 🟢
+
+## Navigasi hemat konteks (WAJIB)
+Pengguna berperan sebagai kurator; Claude yang mengerjakan naskah. Sebelum mencari file apa pun, baca **`PETA.md`** di root — peta lokasi semua dokumen (bab .tex, bib, glosarium, catatan, template) + fakta yang sering dibutuhkan. Jangan menjelajah folder bila PETA.md sudah menjawab. Perbarui PETA.md setiap menambah/memindah file penting.
+
+## Agen & skill khusus proyek (`.claude/`)
+- **Agen** (`.claude/agents/`): `pencari-literatur` (cari + verifikasi paper, anti sitasi karangan) · `auditor-sitasi` (audit \citep ↔ bib ↔ Crossref) · `penulis-bab` (draf .tex) · `penyunting-bahasa` (baku + anti AI-slop) · `penguji-internal` (simulasi dosen penguji, uji defensibility) · `insinyur-eksperimen` (kode LoRA/RAG reprodusibel).
+- **Skill** (`.claude/skills/`): `menulis-akademik` (WAJIB dibaca sebelum menulis teks naskah) · `grafik-tesis` (gambar PDF+PNG untuk LaTeX & Word) · `kompilasi-naskah` (kompilasi + deteksi sitasi rusak).
+- Alur penulisan yang dianjurkan: pencari-literatur → penulis-bab → penyunting-bahasa → auditor-sitasi → penguji-internal.
 
 ## Lapisan pengetahuan (Obsidian) — bukan naskah final
 - `00 - Dashboard` — kendali & progress. `02 - Literatur` — catatan baca (1 paper = 1 catatan), `references.bib`, PDF. `04 - Catatan Atomik` — konsep. `05 - Bimbingan` — notula. `03 - Eksperimen` — kode/data/hasil.

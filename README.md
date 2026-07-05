@@ -18,7 +18,7 @@ cd tesis
 > [!IMPORTANT] Beberapa berkas **sengaja TIDAK disertakan** di repo (lihat `.gitignore`) demi keamanan & ukuran:
 > - **`.mcp.json`** (berisi API key Obsidian) → pakai **`.mcp.json.example`** sebagai acuan.
 > - **PDF paper** (`02 - Literatur/PDF/`) → daftar + tautan unduh ada di `02 - Literatur/Daftar Referensi & PDF.md`.
-> - **Plugin Obsidian** (`.obsidian/plugins/`) → install ulang (lihat di bawah).
+> - **API key plugin Local REST API** (`.obsidian/plugins/obsidian-local-rest-api/data.json`) → dibuat ulang per perangkat. Plugin community lainnya **ikut di repo** dan aktif otomatis (lihat di bawah).
 > - **Artefak build LaTeX** (`*.pdf` hasil, `*.aux`, dll.) & **data/model** eksperimen.
 
 ## 🧰 Prasyarat
@@ -35,11 +35,11 @@ cd tesis
 ## 🚀 Setup setelah clone
 
 1. **Buka sebagai vault Obsidian:** `Open folder as vault` → pilih folder hasil clone.
-2. **Install plugin community** (karena tidak ikut di repo). Lewat Obsidian *Settings → Community plugins → Browse*, pasang:
+2. **Aktifkan plugin community** — sudah ikut di repo, tidak perlu install manual. Saat vault pertama dibuka: *Settings → Community plugins → **Turn off Restricted Mode*** → muat ulang Obsidian. Otomatis terpasang & aktif:
    `Local REST API`, `Dataview`, `Templater`, `Kanban`, `Excalidraw`, `Mind Map`, `Citations`, `Zotero Integration`, `Annotator`.
 3. **Aktifkan Obsidian MCP:**
-   - Di plugin **Local REST API**: set port **27124**, lalu salin **API Key**-nya.
-   - `cp .mcp.json.example .mcp.json` (Windows: salin manual), buka `.mcp.json`, tempel API key ke `OBSIDIAN_API_KEY`, pastikan `OBSIDIAN_PORT` = `27124`.
+   - Di plugin **Local REST API**: aktifkan servernya, salin **API Key** (key polos — JANGAN sertakan kata `Bearer`; client menambahkannya sendiri).
+   - `cp .mcp.json.example .mcp.json` (Windows: salin manual), tempel API key ke `OBSIDIAN_API_KEY`, lalu samakan `OBSIDIAN_PROTOCOL`/`OBSIDIAN_PORT` dengan setelan plugin (vault ini: HTTP `27128`).
 4. **Zotero:** install Zotero 7 → *Edit → Settings → Advanced* → centang *Allow other applications* & *Enable local API*. (Detail lengkap: **[SETUP MCP.md](SETUP%20MCP.md)**.)
 5. **LaTeX / naskah:**
    - **Overleaf:** unggah ZIP di `01 - Naskah/_Overleaf (siap unggah)/` (regenerate bila perlu), set compiler **pdfLaTeX**, main file **LAPORAN_TESIS.tex**.
